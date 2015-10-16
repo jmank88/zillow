@@ -10,8 +10,8 @@ import (
 
 type Zillow interface {
 	// Home Valuation
-	GetZestimate(request ZestimateRequest) (*ZestimateResult, error)
-	//GetSearchResults()
+	GetZestimate(ZestimateRequest) (*ZestimateResult, error)
+	GetSearchResults(SearchRequest) (*SearchResults, error)
 	//GetChart()
 	//GetComps()
 
@@ -41,6 +41,7 @@ func NewZillow(zwsId string) Zillow {
 type Message struct {
 	Text string `xml:"text"`
 	Code int    `xml:"code"`
+	//TODO limit?
 }
 
 type Address struct {
@@ -78,6 +79,8 @@ type ZestimateRequest struct {
 }
 
 type Region struct {
+	XMLName xml.Name `xml:"region"`
+
 	ID                  string  `xml:"id,attr"`
 	Type                string  `xml:"type,attr"`
 	Name                string  `xml:"name,attr"`
@@ -89,23 +92,25 @@ type Region struct {
 	ForSale        string `xml:"links>forSale"`
 }
 
+type Links struct {
+	XMLName xml.Name `xml:"links"`
+
+	HomeDetails   string `xml:"homedetails"`
+	GraphsAndData string `xml:"graphsanddata"`
+	MapThisHome   string `xml:"mapthishome"`
+	Comparables   string `xml:"comparables"`
+}
+
 type ZestimateResult struct {
 	XMLName xml.Name `xml:"zestimate"`
 
 	Request ZestimateRequest `xml:"request"`
 	Message Message          `xml:"message"`
 
-	// Links
-	HomeDetails   string `xml:"response>links>homedetails"`
-	GraphsAndData string `xml:"response>links>graphsanddata"`
-	MapThisHome   string `xml:"response>links>mapthishome"`
-	Comparables   string `xml:"response>links>comparables"`
-
-	Address Address `xml:"response>address"`
-
-	Zestimate Zestimate `xml:"response>zestimate"`
-
-	LocalRealEstate []Region `xml:"response>localRealEstate>region"`
+	Links           Links     `xml:"response>links"`
+	Address         Address   `xml:"response>address"`
+	Zestimate       Zestimate `xml:"response>zestimate"`
+	LocalRealEstate []Region  `xml:"response>localRealEstate>region"`
 
 	// Regions
 	ZipcodeID string `xml:"response>regions>zipcode-id"`
@@ -114,16 +119,45 @@ type ZestimateResult struct {
 	StateID   string `xml:"response>regions>state-id"`
 }
 
+type SearchRequest struct {
+	Address       string `xml:"address"`
+	CityStateZip  string `xml:"citystatezip"`
+	Rentzestimate bool   `xml:"rentzestimate"`
+}
+
+type SearchResults struct {
+	XMLName xml.Name `xml:"searchresults"`
+
+	Request SearchRequest `xml:"request"`
+	Message Message       `xml:"message"`
+
+	Results []SearchResult `xml:"response>results>result"`
+}
+
+type SearchResult struct {
+	XMLName xml.Name `xml:"result"`
+
+	Zpid string `xml:"zpid"`
+
+	Links           Links     `xml:"links"`
+	Address         Address   `xml:"address"`
+	Zestimate       Zestimate `xml:"zestimate"`
+	LocalRealEstate []Region  `xml:"localRealEstate>region"`
+}
+
 const baseUrl = "http://www.zillow.com/webservice/"
 
 const (
 	zwsIdParam         = "zws-Id"
 	zpidParam          = "zpid"
 	rentzestimateParam = "rentzestimate"
+	addressParam       = "address"
+	cityStateZipParam  = "citystatezip"
 )
 
 const (
 	getZestimatePath = "GetZestimate"
+	getSearchResults = "GetSearchResults"
 	//TODO other services
 )
 
@@ -133,7 +167,7 @@ type zillow struct {
 }
 
 func (z *zillow) get(servicePath string, values url.Values, result interface{}) error {
-	if resp, err := http.Get(z.url + "/" + getZestimatePath + ".htm?" + values.Encode()); err != nil {
+	if resp, err := http.Get(z.url + "/" + servicePath + ".htm?" + values.Encode()); err != nil {
 		return err
 	} else if err = xml.NewDecoder(resp.Body).Decode(result); err != nil {
 		return err
@@ -149,6 +183,21 @@ func (z *zillow) GetZestimate(request ZestimateRequest) (*ZestimateResult, error
 	}
 	var result ZestimateResult
 	if err := z.get(getZestimatePath, values, &result); err != nil {
+		return nil, err
+	} else {
+		return &result, nil
+	}
+}
+
+func (z *zillow) GetSearchResults(request SearchRequest) (*SearchResults, error) {
+	values := url.Values{
+		zwsIdParam:         {z.zwsId},
+		addressParam:       {request.Address},
+		cityStateZipParam:  {request.CityStateZip},
+		rentzestimateParam: {strconv.FormatBool(request.Rentzestimate)},
+	}
+	var result SearchResults
+	if err := z.get(getSearchResults, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil

@@ -8,7 +8,7 @@ This api is a work in progress.
 ### Home Valuation
 GetZestimate
 
-TODO GetSearchResults
+GetSearchResults
 
 TODO GetChart
 

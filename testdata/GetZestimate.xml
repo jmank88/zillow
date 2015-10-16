@@ -9,12 +9,8 @@
     <response>
         <zpid>48749425</zpid>
         <links>
-            <homedetails>
-                http://www.zillow.com/homedetails/2114-Bigelow-Ave-N-Seattle-WA-98109/48749425_zpid/
-            </homedetails>
-            <graphsanddata>
-                http://www.zillow.com/homedetails/charts/48749425_zpid,1year_chartDuration/?cbt=2950402095890968938%7E4%7ECh-lwa20e2Scegkf_Ev1dsQ2hJD7f74f1dovt2o0BMi2IuvfsZN-sg**
-            </graphsanddata>
+            <homedetails>http://www.zillow.com/homedetails/2114-Bigelow-Ave-N-Seattle-WA-98109/48749425_zpid/</homedetails>
+            <graphsanddata>http://www.zillow.com/homedetails/charts/48749425_zpid,1year_chartDuration/?cbt=2950402095890968938%7E4%7ECh-lwa20e2Scegkf_Ev1dsQ2hJD7f74f1dovt2o0BMi2IuvfsZN-sg**</graphsanddata>
             <mapthishome>http://www.zillow.com/homes/map/48749425_zpid/</mapthishome>
             <comparables>http://www.zillow.com/homes/comps/48749425_zpid/</comparables>
         </links>
@@ -42,24 +38,16 @@
                 <zindexValue>525,397</zindexValue>
                 <zindexOneYearChange>-0.144</zindexOneYearChange>
                 <links>
-                    <overview>
-                        http://www.zillow.com/local-info/WA-Seattle/East-Queen-Anne/r_271856/
-                    </overview>
-                    <forSaleByOwner>
-                        http://www.zillow.com/homes/fsbo/East-Queen-Anne-Seattle-WA/
-                    </forSaleByOwner>
-                    <forSale>
-                        http://www.zillow.com/east-queen-anne-seattle-wa/
-                    </forSale>
+                    <overview>http://www.zillow.com/local-info/WA-Seattle/East-Queen-Anne/r_271856/</overview>
+                    <forSaleByOwner>http://www.zillow.com/homes/fsbo/East-Queen-Anne-Seattle-WA/</forSaleByOwner>
+                    <forSale>http://www.zillow.com/east-queen-anne-seattle-wa/</forSale>
                 </links>
             </region>
             <region id="16037" type="city" name="Seattle">
                 <zindexValue>381,764</zindexValue>
                 <zindexOneYearChange>-0.074</zindexOneYearChange>
                 <links>
-                    <overview>
-                        http://www.zillow.com/local-info/WA-Seattle/r_16037/
-                    </overview>
+                    <overview>http://www.zillow.com/local-info/WA-Seattle/r_16037/</overview>
                     <forSaleByOwner>http://www.zillow.com/homes/fsbo/Seattle-WA/</forSaleByOwner>
                     <forSale>http://www.zillow.com/seattle-wa/</forSale>
                 </links>
@@ -68,9 +56,7 @@
                 <zindexValue>263,278</zindexValue>
                 <zindexOneYearChange>-0.066</zindexOneYearChange>
                 <links>
-                    <overview>
-                        http://www.zillow.com/local-info/WA-home-value/r_59/
-                    </overview>
+                    <overview>http://www.zillow.com/local-info/WA-home-value/r_59/</overview>
                     <forSaleByOwner>http://www.zillow.com/homes/fsbo/WA/</forSaleByOwner>
                     <forSale>http://www.zillow.com/wa/</forSale>
                 </links>
