@@ -3,8 +3,8 @@ package zillow
 
 import (
 	"encoding/xml"
-	"net/url"
 	"net/http"
+	"net/url"
 	"strconv"
 )
 
@@ -40,66 +40,66 @@ func NewZillow(zwsId string) Zillow {
 
 type Message struct {
 	Text string `xml:"text"`
-	Code int	`xml:"code"`
+	Code int    `xml:"code"`
 }
 
 type Address struct {
-	Street string `xml:"street"`
-	Zipcode string `xml:"zipcode"`
-	City string `xml:"city"`
-	State string `xml:"state"`
-	Latitude float64 `xml:"latitude"`
+	Street    string  `xml:"street"`
+	Zipcode   string  `xml:"zipcode"`
+	City      string  `xml:"city"`
+	State     string  `xml:"state"`
+	Latitude  float64 `xml:"latitude"`
 	Longitude float64 `xml:"longitude"`
 }
 
 type Value struct {
 	Currency string `xml:"currency,attr"`
-	Value int `xml:",chardata"`
+	Value    int    `xml:",chardata"`
 }
 
 type ValueChange struct {
-	Duration int `xml:"duration,attr"`
+	Duration int    `xml:"duration,attr"`
 	Currency string `xml:"currency,attr"`
-	Value int `xml:",chardata"`
+	Value    int    `xml:",chardata"`
 }
 
 type Zestimate struct {
-	Amount Value `xml:"amount"`
-	LastUpdated string `xml:"last-updated"`
+	Amount      Value       `xml:"amount"`
+	LastUpdated string      `xml:"last-updated"`
 	ValueChange ValueChange `xml:"valueChange"`
-	Low Value `xml:"valuationRange>low"`
-	High Value `xml:"valuationRange>high"`
-	Percentile int `xml:"percentile"`
+	Low         Value       `xml:"valuationRange>low"`
+	High        Value       `xml:"valuationRange>high"`
+	Percentile  int         `xml:"percentile"`
 }
 
 type ZestimateRequest struct {
-	Zpid string	`xml:"zpid"`
-	Rentzestimate bool `xml:"rentzestimate"`
+	Zpid          string `xml:"zpid"`
+	Rentzestimate bool   `xml:"rentzestimate"`
 }
 
 type Region struct {
-	ID string `xml:"id,attr"`
-	Type string `xml:"type,attr"`
-	Name string `xml:"name,attr"`
-	ZIndex string `xml:"zindexValue"`
+	ID                  string  `xml:"id,attr"`
+	Type                string  `xml:"type,attr"`
+	Name                string  `xml:"name,attr"`
+	ZIndex              string  `xml:"zindexValue"`
 	ZIndexOneYearChange float64 `xml:"zindexOneYearChange"`
 	// Links
-	Overview string `xml:"links>overview"`
+	Overview       string `xml:"links>overview"`
 	ForSaleByOwner string `xml:"links>forSaleByOwner"`
-	ForSale string `xml:"links>forSale"`
+	ForSale        string `xml:"links>forSale"`
 }
 
 type ZestimateResult struct {
 	XMLName xml.Name `xml:"zestimate"`
 
 	Request ZestimateRequest `xml:"request"`
-	Message Message	`xml:"message"`
+	Message Message          `xml:"message"`
 
 	// Links
-	HomeDetails string `xml:"response>links>homedetails"`
+	HomeDetails   string `xml:"response>links>homedetails"`
 	GraphsAndData string `xml:"response>links>graphsanddata"`
-	MapThisHome string `xml:"response>links>mapthishome"`
-	Comparables string `xml:"response>links>comparables"`
+	MapThisHome   string `xml:"response>links>mapthishome"`
+	Comparables   string `xml:"response>links>comparables"`
 
 	Address Address `xml:"response>address"`
 
@@ -109,16 +109,16 @@ type ZestimateResult struct {
 
 	// Regions
 	ZipcodeID string `xml:"response>regions>zipcode-id"`
-	CityID string `xml:"response>regions>city-id"`
-	CountyID string `xml:"response>regions>county-id"`
-	StateID string `xml:"response>regions>state-id"`
+	CityID    string `xml:"response>regions>city-id"`
+	CountyID  string `xml:"response>regions>county-id"`
+	StateID   string `xml:"response>regions>state-id"`
 }
 
 const baseUrl = "http://www.zillow.com/webservice/"
 
 const (
-	zwsIdParam = "zws-Id"
-	zpidParam = "zpid"
+	zwsIdParam         = "zws-Id"
+	zpidParam          = "zpid"
 	rentzestimateParam = "rentzestimate"
 )
 
@@ -129,7 +129,7 @@ const (
 
 type zillow struct {
 	zwsId string
-	url string
+	url   string
 }
 
 func (z *zillow) get(servicePath string, values url.Values, result interface{}) error {
@@ -141,11 +141,11 @@ func (z *zillow) get(servicePath string, values url.Values, result interface{}) 
 	return nil
 }
 
-func (z *zillow) GetZestimate(request ZestimateRequest) (*ZestimateResult, error)  {
+func (z *zillow) GetZestimate(request ZestimateRequest) (*ZestimateResult, error) {
 	values := url.Values{
-		zwsIdParam:{z.zwsId},
-		zpidParam:{request.Zpid},
-		rentzestimateParam:{strconv.FormatBool(request.Rentzestimate)},
+		zwsIdParam:         {z.zwsId},
+		zpidParam:          {request.Zpid},
+		rentzestimateParam: {strconv.FormatBool(request.Rentzestimate)},
 	}
 	var result ZestimateResult
 	if err := z.get(getZestimatePath, values, &result); err != nil {

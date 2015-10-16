@@ -1,16 +1,16 @@
 package zillow
 
 import (
-	"testing"
-	"net/http/httptest"
-	"net/http"
-	"strings"
-	"os"
-	"io"
-	"reflect"
 	"encoding/xml"
 	"github.com/kr/pretty"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"net/url"
+	"os"
+	"reflect"
+	"strings"
+	"testing"
 )
 
 const (
@@ -21,7 +21,7 @@ const zpid = "48749425"
 
 func testServer(t *testing.T, expectedPath string, validateQuery func(url.Values)) (*httptest.Server, Zillow) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !strings.HasSuffix(r.URL.Path, expectedPath + ".htm") {
+		if !strings.HasSuffix(r.URL.Path, expectedPath+".htm") {
 			t.Errorf("expected path %q to end with %s", r.URL.Path, expectedPath)
 		}
 		validateQuery(r.URL.Query())
@@ -29,11 +29,11 @@ func testServer(t *testing.T, expectedPath string, validateQuery func(url.Values
 		if err != nil {
 			t.Fatal(err)
 		}
-		if _,err := io.Copy(w, f); err != nil {
+		if _, err := io.Copy(w, f); err != nil {
 			t.Fatal(err)
 		}
 	}))
-	return ts, &zillow{zwsId:testZwsId,url:ts.URL}
+	return ts, &zillow{zwsId: testZwsId, url: ts.URL}
 }
 
 func TestGetZestimate(t *testing.T) {
@@ -54,14 +54,14 @@ func TestGetZestimate(t *testing.T) {
 	ts, zillow := testServer(t, getZestimatePath, validateQuery)
 	defer ts.Close()
 
-	result, err := zillow.GetZestimate(ZestimateRequest{Zpid:zpid})
+	result, err := zillow.GetZestimate(ZestimateRequest{Zpid: zpid})
 	if err != nil {
 		t.Fatal(err)
 	}
 	expected := &ZestimateResult{
-		XMLName: xml.Name{Space:"Zestimate",Local:"zestimate"},
+		XMLName: xml.Name{Space: "Zestimate", Local: "zestimate"},
 		Request: ZestimateRequest{
-			Zpid: zpid,
+			Zpid:          zpid,
 			Rentzestimate: false,
 		},
 		Message: Message{
@@ -77,27 +77,27 @@ func TestGetZestimate(t *testing.T) {
 		MapThisHome: "http://www.zillow.com/homes/map/48749425_zpid/",
 		Comparables: "http://www.zillow.com/homes/comps/48749425_zpid/",
 		Address: Address{
-			Street: "2114 Bigelow Ave N",
-			Zipcode: "98109",
-			City: "Seattle",
-			State: "WA",
-			Latitude: 47.63793,
+			Street:    "2114 Bigelow Ave N",
+			Zipcode:   "98109",
+			City:      "Seattle",
+			State:     "WA",
+			Latitude:  47.63793,
 			Longitude: -122.347936,
 		},
 		Zestimate: Zestimate{
-			Amount: Value{Currency:"USD",Value:1219500},
+			Amount:      Value{Currency: "USD", Value: 1219500},
 			LastUpdated: "11/03/2009",
-			ValueChange: ValueChange{Duration:30, Currency:"USD", Value: -41500},
-			Percentile: 95,
-			Low: Value{Currency:"USD", Value:1024380},
-			High: Value{Currency:"USD", Value:1378035},
+			ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: -41500},
+			Percentile:  95,
+			Low:         Value{Currency: "USD", Value: 1024380},
+			High:        Value{Currency: "USD", Value: 1378035},
 		},
 		LocalRealEstate: []Region{
 			Region{
-				ID: "271856",
-				Type: "neighborhood",
-				Name: "East Queen Anne",
-				ZIndex: "525,397",
+				ID:                  "271856",
+				Type:                "neighborhood",
+				Name:                "East Queen Anne",
+				ZIndex:              "525,397",
 				ZIndexOneYearChange: -0.144,
 				Overview: `
                         http://www.zillow.com/local-info/WA-Seattle/East-Queen-Anne/r_271856/
@@ -110,34 +110,34 @@ func TestGetZestimate(t *testing.T) {
                     `,
 			},
 			Region{
-				ID: "16037",
-				Type: "city",
-				Name: "Seattle",
-				ZIndex: "381,764",
+				ID:                  "16037",
+				Type:                "city",
+				Name:                "Seattle",
+				ZIndex:              "381,764",
 				ZIndexOneYearChange: -0.074,
 				Overview: `
                         http://www.zillow.com/local-info/WA-Seattle/r_16037/
                     `,
 				ForSaleByOwner: `http://www.zillow.com/homes/fsbo/Seattle-WA/`,
-				ForSale: `http://www.zillow.com/seattle-wa/`,
+				ForSale:        `http://www.zillow.com/seattle-wa/`,
 			},
 			Region{
-				ID: "59",
-				Type: "state",
-				Name: "Washington",
-				ZIndex: "263,278",
+				ID:                  "59",
+				Type:                "state",
+				Name:                "Washington",
+				ZIndex:              "263,278",
 				ZIndexOneYearChange: -0.066,
 				Overview: `
                         http://www.zillow.com/local-info/WA-home-value/r_59/
                     `,
 				ForSaleByOwner: `http://www.zillow.com/homes/fsbo/WA/`,
-				ForSale: `http://www.zillow.com/wa/`,
+				ForSale:        `http://www.zillow.com/wa/`,
 			},
 		},
 		ZipcodeID: "99569",
-		CityID: "16037",
-		CountyID: "207",
-		StateID: "59",
+		CityID:    "16037",
+		CountyID:  "207",
+		StateID:   "59",
 	}
 
 	if !reflect.DeepEqual(result, expected) {
