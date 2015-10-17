@@ -6,32 +6,24 @@ This api is a work in progress.
 
 ## Services
 ### Home Valuation
-GetZestimate
-
-GetSearchResults
-
-GetChart
-
-TODO GetComps
+- GetZestimate
+- GetSearchResults
+- GetChart
+- GetComps
 
 ### Property Details
-TODO GetDeepComps
-
-TODO GetDeepSearchResults
-
-TODO GetUpdatedPropertyDetails
+- TODO GetDeepComps
+- TODO GetDeepSearchResults
+- TODO GetUpdatedPropertyDetails
 
 ### Neighborhood Data
-TODO GetRegionChildren
-
-TODO GetRegionChart
+- TODO GetRegionChildren
+- TODO GetRegionChart
 
 ### Mortgage Rates
-TODO GetRateSummary
+- TODO GetRateSummary
 
 ### Mortgage Calculators
-TODO GetMonthlyPayments
-
-TODO CalculateMonthlyPaymentsAdvanced
-
-TODO CalculateAffordability
+- TODO GetMonthlyPayments
+- TODO CalculateMonthlyPaymentsAdvanced
+- TODO CalculateAffordability
