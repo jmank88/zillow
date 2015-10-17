@@ -13,7 +13,7 @@ type Zillow interface {
 	GetZestimate(ZestimateRequest) (*ZestimateResult, error)
 	GetSearchResults(SearchRequest) (*SearchResults, error)
 	GetChart(ChartRequest) (*ChartResult, error)
-	//GetComps()
+	GetComps(CompsRequest) (*CompsResult, error)
 
 	// Property Details
 	//GetDeepComps()
@@ -70,7 +70,7 @@ type Zestimate struct {
 	ValueChange ValueChange `xml:"valueChange"`
 	Low         Value       `xml:"valuationRange>low"`
 	High        Value       `xml:"valuationRange>high"`
-	Percentile  int         `xml:"percentile"`
+	Percentile  string      `xml:"percentile"`
 }
 
 type ZestimateRequest struct {
@@ -98,6 +98,7 @@ type Links struct {
 	HomeDetails   string `xml:"homedetails"`
 	GraphsAndData string `xml:"graphsanddata"`
 	MapThisHome   string `xml:"mapthishome"`
+	MyZestimator  string `xml:"myzestimator"`
 	Comparables   string `xml:"comparables"`
 }
 
@@ -161,6 +162,37 @@ type ChartResult struct {
 	Url     string       `xml:"response>url"`
 }
 
+type CompsRequest struct {
+	Zpid          string `xml:"zpid"`
+	Count         int    `xml:"count"`
+	Rentzestimate bool   `xml:"rentzestimate"`
+}
+
+type Principal struct {
+	Zpid      string    `xml:"zpid"`
+	Links     Links     `xml:"links"`
+	Address   Address   `xml:"address"`
+	Zestimate Zestimate `xml:"zestimate"`
+}
+
+type Comp struct {
+	Score     float64   `xml:"score,attr"`
+	Zpid      string    `xml:"zpid"`
+	Links     Links     `xml:"links"`
+	Address   Address   `xml:"address"`
+	Zestimate Zestimate `xml:"zestimate"`
+}
+
+type CompsResult struct {
+	XMLName xml.Name `xml:"comps"`
+
+	Request CompsRequest `xml:"request"`
+	Message Message      `xml:"message"`
+
+	Principal   Principal `xml:"response>properties>principal"`
+	Comparables []Comp    `xml:"response>properties>comparables>comp"`
+}
+
 const baseUrl = "http://www.zillow.com/webservice/"
 
 const (
@@ -173,12 +205,14 @@ const (
 	widthParam         = "width"
 	heightParam        = "height"
 	chartDurationParam = "chartDuration"
+	countParam         = "count"
 )
 
 const (
 	getZestimatePath = "GetZestimate"
 	getSearchResults = "GetSearchResults"
 	getChart         = "GetChart"
+	getComps         = "GetComps"
 	//TODO other services
 )
 
@@ -236,6 +270,21 @@ func (z *zillow) GetChart(request ChartRequest) (*ChartResult, error) {
 	}
 	var result ChartResult
 	if err := z.get(getChart, values, &result); err != nil {
+		return nil, err
+	} else {
+		return &result, nil
+	}
+}
+
+func (z *zillow) GetComps(request CompsRequest) (*CompsResult, error) {
+	values := url.Values{
+		zwsIdParam:         {z.zwsId},
+		zpidParam:          {request.Zpid},
+		countParam:         {strconv.Itoa(request.Count)},
+		rentzestimateParam: {strconv.FormatBool(request.Rentzestimate)},
+	}
+	var result CompsResult
+	if err := z.get(getComps, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
