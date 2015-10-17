@@ -84,8 +84,8 @@ func TestGetZestimate(t *testing.T) {
 			Zipcode:   "98109",
 			City:      "Seattle",
 			State:     "WA",
-			Latitude:  47.63793,
-			Longitude: -122.347936,
+			Latitude:  "47.63793",
+			Longitude: "-122.347936",
 		},
 		Zestimate: Zestimate{
 			Amount:      Value{Currency: "USD", Value: 1219500},
@@ -137,7 +137,7 @@ func TestGetZestimate(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %s\n\n but got:\n %s\n\n diff:\n %s\n",
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
 			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
 	}
 }
@@ -178,8 +178,8 @@ func TestGetSearchResults(t *testing.T) {
 					Zipcode:   "98109",
 					City:      "Seattle",
 					State:     "WA",
-					Latitude:  47.63793,
-					Longitude: -122.347936,
+					Latitude:  "47.63793",
+					Longitude: "-122.347936",
 				},
 				Zestimate: Zestimate{
 					Amount:      Value{Currency: "USD", Value: 1219500},
@@ -259,7 +259,7 @@ func TestGetChart(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %s\n\n but got:\n %s\n\n diff:\n %s\n",
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
 			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
 	}
 }
@@ -298,8 +298,8 @@ func TestGetComps(t *testing.T) {
 				Zipcode:   "98109",
 				City:      "SEATTLE",
 				State:     "WA",
-				Latitude:  47.637934,
-				Longitude: -122.347936,
+				Latitude:  "47.637934",
+				Longitude: "-122.347936",
 			},
 			Zestimate: Zestimate{
 				Amount:      Value{Currency: "USD", Value: 1124072},
@@ -326,8 +326,8 @@ func TestGetComps(t *testing.T) {
 					Zipcode:   "98109",
 					City:      "SEATTLE",
 					State:     "WA",
-					Latitude:  47.637253,
-					Longitude: -122.347385,
+					Latitude:  "47.637253",
+					Longitude: "-122.347385",
 				},
 				Zestimate: Zestimate{
 					Amount:      Value{Currency: "USD", Value: 985000},
@@ -352,8 +352,8 @@ func TestGetComps(t *testing.T) {
 					Zipcode:   "98109",
 					City:      "SEATTLE",
 					State:     "WA",
-					Latitude:  47.638543,
-					Longitude: -122.348008,
+					Latitude:  "47.638543",
+					Longitude: "-122.348008",
 				},
 				Zestimate: Zestimate{
 					Amount:      Value{Currency: "USD", Value: 1326256},
@@ -366,7 +366,181 @@ func TestGetComps(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %s\n\n but got:\n %s\n\n diff:\n %s\n",
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
+			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+	}
+}
+
+func TestGetDeepComp(t *testing.T) {
+	server, zillow := testFixtures(t, getDeepComps, func(values url.Values) {
+		assertOnlyParam(t, values, zpidParam, zpid)
+		assertOnlyParam(t, values, countParam, strconv.Itoa(count))
+		assertOnlyParam(t, values, rentzestimateParam, "false")
+	})
+	defer server.Close()
+
+	request := CompsRequest{Zpid: zpid, Count: count}
+	result, err := zillow.GetDeepComps(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := &DeepCompsResult{
+		XMLName: xml.Name{Space: "Comps", Local: "comps"},
+		Request: request,
+		Message: Message{
+			Text: "Request successfully processed",
+			Code: 0,
+		},
+
+		Principal: DeepPrincipal{
+			Zpid: "lastSoldPrice",
+			Links: Links{
+				XMLName:       xml.Name{Local: "links"},
+				HomeDetails:   "http://www.zillow.com/homedetails/2114-Bigelow-Ave-N-Seattle-WA-98109/48749425_zpid/",
+				GraphsAndData: "http://www.zillow.com/homedetails/charts/48749425_zpid,1year_chartDuration/?cbt=8860375400203215891%7E4%7E4rtHGS99FewWZQdZkxwcJh2zVPQgG28TgCLWpvfp18j0KOoW_noNWg**",
+				MapThisHome:   "http://www.zillow.com/homes/map/48749425_zpid/",
+				Comparables:   "http://www.zillow.com/homes/comps/48749425_zpid/",
+			},
+			Address: Address{
+				Street:    "2114 Bigelow Ave N",
+				Zipcode:   "98109",
+				City:      "Seattle",
+				State:     "WA",
+				Latitude:  "47.63793",
+				Longitude: "-122.347936",
+			},
+			TaxAssesmentYear: 2008,
+			TaxAssesment:     1054000.0,
+			YearBuilt:        1924,
+			LotSizeSqFt:      4680,
+			FinishedSqFt:     3470,
+			Bathrooms:        3.0,
+			Bedrooms:         4,
+			LastSoldDate:     "11/26/2008",
+			LastSoldPrice:    Value{Currency: "USD", Value: 995000},
+			Zestimate: Zestimate{
+				Amount:      Value{Currency: "USD", Value: 1219500},
+				LastUpdated: "12/31/1969",
+				ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: -41500},
+				Low:         Value{Currency: "USD", Value: 1024380},
+				High:        Value{Currency: "USD", Value: 1378035},
+				Percentile:  "95",
+			},
+			LocalRealEstate: []Region{
+				Region{
+					XMLName:             xml.Name{Local: "region"},
+					ID:                  "271856",
+					Type:                "neighborhood",
+					Name:                "East Queen Anne",
+					ZIndex:              "525,397",
+					ZIndexOneYearChange: -0.144,
+					Overview:            "http://www.zillow.com/local-info/WA-Seattle/East-Queen-Anne/r_271856/",
+					ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/East-Queen-Anne-Seattle-WA/",
+					ForSale:             "http://www.zillow.com/east-queen-anne-seattle-wa/",
+				},
+				Region{
+					XMLName:             xml.Name{Local: "region"},
+					ID:                  "16037",
+					Type:                "city",
+					Name:                "Seattle",
+					ZIndex:              "381,764",
+					ZIndexOneYearChange: -0.074,
+					Overview:            "http://www.zillow.com/local-info/WA-Seattle/r_16037/",
+					ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/Seattle-WA/",
+					ForSale:             "http://www.zillow.com/seattle-wa/",
+				},
+				Region{
+					XMLName:             xml.Name{Local: "region"},
+					ID:                  "59",
+					Type:                "state",
+					Name:                "Washington",
+					ZIndex:              "263,278",
+					ZIndexOneYearChange: -0.066,
+					Overview:            "http://www.zillow.com/local-info/WA-home-value/r_59/",
+					ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/WA/",
+					ForSale:             "http://www.zillow.com/wa/",
+				},
+			},
+		},
+		Comparables: []DeepComp{
+			{
+				Score: 0.156502,
+				Zpid:  "89210365",
+				Links: Links{
+					XMLName:       xml.Name{Space: "", Local: "links"},
+					HomeDetails:   "http://www.zillow.com/homedetails/1511-10th-Ave-W-Seattle-WA-98119/89210365_zpid/",
+					GraphsAndData: "http://www.zillow.com/homedetails/charts/89210365_zpid,1year_chartDuration/?cbt=8860375400203215891%7E4%7E4rtHGS99FewWZQdZkxwcJh2zVPQgG28TgCLWpvfp18j0KOoW_noNWg**",
+					MapThisHome:   "http://www.zillow.com/homes/map/89210365_zpid/",
+					Comparables:   "http://www.zillow.com/homes/comps/89210365_zpid/",
+				},
+				Address: Address{
+					Street:    "1511 10th Ave W",
+					Zipcode:   "98119",
+					City:      "Seattle",
+					State:     "WA",
+					Latitude:  "",
+					Longitude: "",
+				},
+				TaxAssesmentYear: 2008,
+				TaxAssesment:     804000,
+				YearBuilt:        2006,
+				LotSizeSqFt:      3750,
+				FinishedSqFt:     2520,
+				Bathrooms:        4,
+				Bedrooms:         4,
+				LastSoldDate:     "09/24/2009",
+				LastSoldPrice:    Value{Currency: "USD", Value: 832500},
+				Zestimate: Zestimate{
+					Amount:      Value{Currency: "USD", Value: 836500},
+					LastUpdated: "11/03/2009",
+					ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: -220500},
+					Low:         Value{Currency: "USD", Value: 777945},
+					High:        Value{Currency: "USD", Value: 886690},
+					Percentile:  "83",
+				},
+			},
+			{
+				Score: 0.156114,
+				Zpid:  "49009208",
+				Links: Links{
+					XMLName:       xml.Name{Space: "", Local: "links"},
+					HomeDetails:   "http://www.zillow.com/homedetails/2928-Queen-Anne-Ave-N-Seattle-WA-98109/49009208_zpid/",
+					GraphsAndData: "http://www.zillow.com/homedetails/charts/49009208_zpid,1year_chartDuration/?cbt=8860375400203215891%7E4%7E4rtHGS99FewWZQdZkxwcJh2zVPQgG28TgCLWpvfp18j0KOoW_noNWg**",
+					MapThisHome:   "http://www.zillow.com/homes/map/49009208_zpid/",
+					MyZestimator:  "",
+					Comparables:   "http://www.zillow.com/homes/comps/49009208_zpid/",
+				},
+				Address: Address{
+					Street:    "2928 Queen Anne Ave N",
+					Zipcode:   "98109",
+					City:      "Seattle",
+					State:     "WA",
+					Latitude:  "47.646643",
+					Longitude: "-122.356534",
+				},
+				TaxAssesmentYear: 2008,
+				TaxAssesment:     633000,
+				YearBuilt:        1927,
+				LotSizeSqFt:      3240,
+				FinishedSqFt:     1920,
+				Bathrooms:        2,
+				Bedrooms:         2,
+				LastSoldDate:     "08/20/2009",
+				LastSoldPrice:    Value{Currency: "USD", Value: 595000},
+				Zestimate: Zestimate{
+					Amount:      Value{Currency: "USD", Value: 608000},
+					LastUpdated: "11/03/2009",
+					ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: 11000},
+					Low:         Value{Currency: "USD", Value: 559360},
+					High:        Value{Currency: "USD", Value: 656640},
+					Percentile:  "68",
+				},
+			},
+		},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
 			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
 	}
 }

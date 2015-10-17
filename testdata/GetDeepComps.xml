@@ -1,0 +1,214 @@
+<Comps:comps xsi:schemaLocation="http://www.zillow.com/static/xsd/Comps.xsd /vstatic/ae1bf8a790b67ef2e902d2bc04046f02/static/xsd/Comps.xsd">
+    <request>
+        <zpid>48749425</zpid>
+        <count>5</count>
+    </request>
+    <message>
+        <text>Request successfully processed</text>
+        <code>0</code>
+    </message>
+    <response>
+        <properties>
+            <principal>
+                <zpid>lastSoldPrice</zpid>
+                <links>
+                    <homedetails>http://www.zillow.com/homedetails/2114-Bigelow-Ave-N-Seattle-WA-98109/48749425_zpid/</homedetails>
+                    <graphsanddata>http://www.zillow.com/homedetails/charts/48749425_zpid,1year_chartDuration/?cbt=8860375400203215891%7E4%7E4rtHGS99FewWZQdZkxwcJh2zVPQgG28TgCLWpvfp18j0KOoW_noNWg**</graphsanddata>
+                    <mapthishome>http://www.zillow.com/homes/map/48749425_zpid/</mapthishome>
+                    <comparables>http://www.zillow.com/homes/comps/48749425_zpid/</comparables>
+                </links>
+                <address>
+                    <street>2114 Bigelow Ave N</street>
+                    <zipcode>98109</zipcode>
+                    <city>Seattle</city>
+                    <state>WA</state>
+                    <latitude>47.63793</latitude>
+                    <longitude>-122.347936</longitude>
+                </address>
+                <taxAssessmentYear>2008</taxAssessmentYear>
+                <taxAssessment>1054000.0</taxAssessment>
+                <yearBuilt>1924</yearBuilt>
+                <lotSizeSqFt>4680</lotSizeSqFt>
+                <finishedSqFt>3470</finishedSqFt>
+                <bathrooms>3.0</bathrooms>
+                <bedrooms>4</bedrooms>
+                <lastSoldDate>11/26/2008</lastSoldDate>
+                <lastSoldPrice currency="USD">995000</lastSoldPrice>
+                <zestimate>
+                    <amount currency="USD">1219500</amount>
+                    <last-updated>12/31/1969</last-updated>
+                    <oneWeekChange deprecated="true"/>
+                    <valueChange duration="30" currency="USD">-41500</valueChange>
+                    <valuationRange>
+                        <low currency="USD">1024380</low>
+                        <high currency="USD">1378035</high>
+                    </valuationRange>
+                    <percentile>95</percentile>
+                </zestimate>
+                <localRealEstate>
+                    <region id="271856" type="neighborhood" name="East Queen Anne">
+                        <zindexValue>525,397</zindexValue>
+                        <zindexOneYearChange>-0.144</zindexOneYearChange>
+                        <links>
+                            <overview>http://www.zillow.com/local-info/WA-Seattle/East-Queen-Anne/r_271856/</overview>
+                            <forSaleByOwner>http://www.zillow.com/homes/fsbo/East-Queen-Anne-Seattle-WA/</forSaleByOwner>
+                            <forSale>http://www.zillow.com/east-queen-anne-seattle-wa/</forSale>
+                        </links>
+                    </region>
+                    <region id="16037" type="city" name="Seattle">
+                        <zindexValue>381,764</zindexValue>
+                        <zindexOneYearChange>-0.074</zindexOneYearChange>
+                        <links>
+                            <overview>http://www.zillow.com/local-info/WA-Seattle/r_16037/</overview>
+                            <forSaleByOwner>http://www.zillow.com/homes/fsbo/Seattle-WA/</forSaleByOwner>
+                            <forSale>http://www.zillow.com/seattle-wa/</forSale>
+                        </links>
+                    </region>
+                    <region id="59" type="state" name="Washington">
+                        <zindexValue>263,278</zindexValue>
+                        <zindexOneYearChange>-0.066</zindexOneYearChange>
+                        <links>
+                            <overview>http://www.zillow.com/local-info/WA-home-value/r_59/</overview>
+                            <forSaleByOwner>http://www.zillow.com/homes/fsbo/WA/</forSaleByOwner>
+                            <forSale>http://www.zillow.com/wa/</forSale>
+                        </links>
+                    </region>
+                </localRealEstate>
+            </principal>
+            <comparables>
+                <comp score="0.156502">
+                    <zpid>89210365</zpid>
+                    <links>
+                        <homedetails>http://www.zillow.com/homedetails/1511-10th-Ave-W-Seattle-WA-98119/89210365_zpid/</homedetails>
+                        <graphsanddata>http://www.zillow.com/homedetails/charts/89210365_zpid,1year_chartDuration/?cbt=8860375400203215891%7E4%7E4rtHGS99FewWZQdZkxwcJh2zVPQgG28TgCLWpvfp18j0KOoW_noNWg**</graphsanddata>
+                        <mapthishome>http://www.zillow.com/homes/map/89210365_zpid/</mapthishome>
+                        <comparables>http://www.zillow.com/homes/comps/89210365_zpid/</comparables>
+                    </links>
+                    <address>
+                        <street>1511 10th Ave W</street>
+                        <zipcode>98119</zipcode>
+                        <city>Seattle</city>
+                        <state>WA</state>
+                        <latitude/>
+                        <longitude/>
+                    </address>
+                    <taxAssessmentYear>2008</taxAssessmentYear>
+                    <taxAssessment>804000.0</taxAssessment>
+                    <yearBuilt>2006</yearBuilt>
+                    <lotSizeSqFt>3750</lotSizeSqFt>
+                    <finishedSqFt>2520</finishedSqFt>
+                    <bathrooms>4.0</bathrooms>
+                    <bedrooms>4</bedrooms>
+                    <lastSoldDate>09/24/2009</lastSoldDate>
+                    <lastSoldPrice currency="USD">832500</lastSoldPrice>
+                    <zestimate>
+                        <amount currency="USD">836500</amount>
+                        <last-updated>11/03/2009</last-updated>
+                        <oneWeekChange deprecated="true"/>
+                        <valueChange duration="30" currency="USD">-220500</valueChange>
+                        <valuationRange>
+                            <low currency="USD">777945</low>
+                            <high currency="USD">886690</high>
+                        </valuationRange>
+                        <percentile>83</percentile>
+                    </zestimate>
+                    <localRealEstate>
+                        <region id="272018" type="neighborhood" name="West Queen Anne">
+                            <zindexValue>547,776</zindexValue>
+                            <zindexOneYearChange>-0.078</zindexOneYearChange>
+                            <links>
+                                <overview>http://www.zillow.com/local-info/WA-Seattle/West-Queen-Anne/r_272018/</overview>
+                                <forSaleByOwner>http://www.zillow.com/homes/fsbo/West-Queen-Anne-Seattle-WA/</forSaleByOwner>
+                                <forSale>http://www.zillow.com/west-queen-anne-seattle-wa/</forSale>
+                            </links>
+                        </region>
+                        <region id="16037" type="city" name="Seattle">
+                            <zindexValue>381,764</zindexValue>
+                            <zindexOneYearChange>-0.074</zindexOneYearChange>
+                            <links>
+                                <overview>http://www.zillow.com/local-info/WA-Seattle/r_16037/</overview>
+                                <forSaleByOwner>http://www.zillow.com/homes/fsbo/Seattle-WA/</forSaleByOwner>
+                                <forSale>http://www.zillow.com/seattle-wa/</forSale>
+                            </links>
+                        </region>
+                        <region id="59" type="state" name="Washington">
+                            <zindexValue>263,278</zindexValue>
+                            <zindexOneYearChange>-0.066</zindexOneYearChange>
+                            <links>
+                                <overview>http://www.zillow.com/local-info/WA-home-value/r_59/</overview>
+                                <forSaleByOwner>http://www.zillow.com/homes/fsbo/WA/</forSaleByOwner>
+                                <forSale>http://www.zillow.com/wa/</forSale>
+                            </links>
+                        </region>
+                    </localRealEstate>
+                </comp>
+                <comp score="0.156114">
+                    <zpid>49009208</zpid>
+                    <links>
+                        <homedetails>http://www.zillow.com/homedetails/2928-Queen-Anne-Ave-N-Seattle-WA-98109/49009208_zpid/</homedetails>
+                        <graphsanddata>http://www.zillow.com/homedetails/charts/49009208_zpid,1year_chartDuration/?cbt=8860375400203215891%7E4%7E4rtHGS99FewWZQdZkxwcJh2zVPQgG28TgCLWpvfp18j0KOoW_noNWg**</graphsanddata>
+                        <mapthishome>http://www.zillow.com/homes/map/49009208_zpid/</mapthishome>
+                        <comparables>http://www.zillow.com/homes/comps/49009208_zpid/</comparables>
+                    </links>
+                    <address>
+                        <street>2928 Queen Anne Ave N</street>
+                        <zipcode>98109</zipcode>
+                        <city>Seattle</city>
+                        <state>WA</state>
+                        <latitude>47.646643</latitude>
+                        <longitude>-122.356534</longitude>
+                    </address>
+                    <taxAssessmentYear>2008</taxAssessmentYear>
+                    <taxAssessment>633000.0</taxAssessment>
+                    <yearBuilt>1927</yearBuilt>
+                    <lotSizeSqFt>3240</lotSizeSqFt>
+                    <finishedSqFt>1920</finishedSqFt>
+                    <bathrooms>2.0</bathrooms>
+                    <bedrooms>2</bedrooms>
+                    <lastSoldDate>08/20/2009</lastSoldDate>
+                    <lastSoldPrice currency="USD">595000</lastSoldPrice>
+                    <zestimate>
+                        <amount currency="USD">608000</amount>
+                        <last-updated>11/03/2009</last-updated>
+                        <oneWeekChange deprecated="true"/>
+                        <valueChange duration="30" currency="USD">11000</valueChange>
+                        <valuationRange>
+                            <low currency="USD">559360</low>
+                            <high currency="USD">656640</high>
+                        </valuationRange>
+                        <percentile>68</percentile>
+                    </zestimate>
+                    <localRealEstate>
+                        <region id="271942" type="neighborhood" name="North Queen Anne">
+                            <zindexValue>521,820</zindexValue>
+                            <zindexOneYearChange>-0.059</zindexOneYearChange>
+                            <links>
+                                <overview>http://www.zillow.com/local-info/WA-Seattle/North-Queen-Anne/r_271942/</overview>
+                                <forSaleByOwner>http://www.zillow.com/homes/fsbo/North-Queen-Anne-Seattle-WA/</forSaleByOwner>
+                                <forSale>http://www.zillow.com/north-queen-anne-seattle-wa/</forSale>
+                            </links>
+                        </region>
+                        <region id="16037" type="city" name="Seattle">
+                            <zindexValue>381,764</zindexValue>
+                            <zindexOneYearChange>-0.074</zindexOneYearChange>
+                            <links>
+                                <overview>http://www.zillow.com/local-info/WA-Seattle/r_16037/</overview>
+                                <forSaleByOwner>http://www.zillow.com/homes/fsbo/Seattle-WA/</forSaleByOwner>
+                                <forSale>http://www.zillow.com/seattle-wa/</forSale>
+                            </links>
+                        </region>
+                        <region id="59" type="state" name="Washington">
+                            <zindexValue>263,278</zindexValue>
+                            <zindexOneYearChange>-0.066</zindexOneYearChange>
+                            <links>
+                                <overview>http://www.zillow.com/local-info/WA-home-value/r_59/</overview>
+                                <forSaleByOwner>http://www.zillow.com/homes/fsbo/WA/</forSaleByOwner>
+                                <forSale>http://www.zillow.com/wa/</forSale>
+                            </links>
+                        </region>
+                    </localRealEstate>
+                </comp>
+            </comparables>
+        </properties>
+    </response>
+</Comps:comps>

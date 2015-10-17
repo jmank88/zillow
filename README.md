@@ -12,7 +12,7 @@ This api is a work in progress.
 - GetComps
 
 ### Property Details
-- TODO GetDeepComps
+- GetDeepComps
 - TODO GetDeepSearchResults
 - TODO GetUpdatedPropertyDetails
 

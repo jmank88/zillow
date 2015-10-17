@@ -16,7 +16,7 @@ type Zillow interface {
 	GetComps(CompsRequest) (*CompsResult, error)
 
 	// Property Details
-	//GetDeepComps()
+	GetDeepComps(CompsRequest) (*DeepCompsResult, error)
 	//GetDeepSearchResults()
 	//GetUpdatedPropertyDetails()
 
@@ -45,12 +45,12 @@ type Message struct {
 }
 
 type Address struct {
-	Street    string  `xml:"street"`
-	Zipcode   string  `xml:"zipcode"`
-	City      string  `xml:"city"`
-	State     string  `xml:"state"`
-	Latitude  float64 `xml:"latitude"`
-	Longitude float64 `xml:"longitude"`
+	Street    string `xml:"street"`
+	Zipcode   string `xml:"zipcode"`
+	City      string `xml:"city"`
+	State     string `xml:"state"`
+	Latitude  string `xml:"latitude"`
+	Longitude string `xml:"longitude"`
 }
 
 type Value struct {
@@ -193,6 +193,50 @@ type CompsResult struct {
 	Comparables []Comp    `xml:"response>properties>comparables>comp"`
 }
 
+type DeepPrincipal struct {
+	Zpid             string    `xml:"zpid"`
+	Links            Links     `xml:"links"`
+	Address          Address   `xml:"address"`
+	TaxAssesmentYear int       `xml:"taxAssessmentYear"`
+	TaxAssesment     float64   `xml:"taxAssessment"`
+	YearBuilt        int       `xml:"yearBuilt"`
+	LotSizeSqFt      int       `xml:"lotSizeSqFt"`
+	FinishedSqFt     int       `xml:"finishedSqFt"`
+	Bathrooms        float64   `xml:"bathrooms"`
+	Bedrooms         int       `xml:"bedrooms"`
+	LastSoldDate     string    `xml:"lastSoldDate"`
+	LastSoldPrice    Value     `xml:"lastSoldPrice"`
+	Zestimate        Zestimate `xml:"zestimate"`
+	LocalRealEstate  []Region  `xml:"localRealEstate>region"`
+}
+
+type DeepComp struct {
+	Score            float64   `xml:"score,attr"`
+	Zpid             string    `xml:"zpid"`
+	Links            Links     `xml:"links"`
+	Address          Address   `xml:"address"`
+	TaxAssesmentYear int       `xml:"taxAssessmentYear"`
+	TaxAssesment     float64   `xml:"taxAssessment"`
+	YearBuilt        int       `xml:"yearBuilt"`
+	LotSizeSqFt      int       `xml:"lotSizeSqFt"`
+	FinishedSqFt     int       `xml:"finishedSqFt"`
+	Bathrooms        float64   `xml:"bathrooms"`
+	Bedrooms         int       `xml:"bedrooms"`
+	LastSoldDate     string    `xml:"lastSoldDate"`
+	LastSoldPrice    Value     `xml:"lastSoldPrice"`
+	Zestimate        Zestimate `xml:"zestimate"`
+}
+
+type DeepCompsResult struct {
+	XMLName xml.Name `xml:"comps"`
+
+	Request CompsRequest `xml:"request"`
+	Message Message      `xml:"message"`
+
+	Principal   DeepPrincipal `xml:"response>properties>principal"`
+	Comparables []DeepComp    `xml:"response>properties>comparables>comp"`
+}
+
 const baseUrl = "http://www.zillow.com/webservice/"
 
 const (
@@ -213,6 +257,7 @@ const (
 	getSearchResults = "GetSearchResults"
 	getChart         = "GetChart"
 	getComps         = "GetComps"
+	getDeepComps     = "GetDeepComps"
 	//TODO other services
 )
 
@@ -285,6 +330,21 @@ func (z *zillow) GetComps(request CompsRequest) (*CompsResult, error) {
 	}
 	var result CompsResult
 	if err := z.get(getComps, values, &result); err != nil {
+		return nil, err
+	} else {
+		return &result, nil
+	}
+}
+
+func (z *zillow) GetDeepComps(request CompsRequest) (*DeepCompsResult, error) {
+	values := url.Values{
+		zwsIdParam:         {z.zwsId},
+		zpidParam:          {request.Zpid},
+		countParam:         {strconv.Itoa(request.Count)},
+		rentzestimateParam: {strconv.FormatBool(request.Rentzestimate)},
+	}
+	var result DeepCompsResult
+	if err := z.get(getDeepComps, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
