@@ -17,7 +17,7 @@ type Zillow interface {
 
 	// Property Details
 	GetDeepComps(CompsRequest) (*DeepCompsResult, error)
-	//GetDeepSearchResults()
+	GetDeepSearchResults(SearchRequest) (*DeepSearchResults, error)
 	//GetUpdatedPropertyDetails()
 
 	// Neighborhood Data
@@ -237,6 +237,36 @@ type DeepCompsResult struct {
 	Comparables []DeepComp    `xml:"response>properties>comparables>comp"`
 }
 
+type DeepSearchResult struct {
+	XMLName xml.Name `xml:"result"`
+
+	Zpid              string    `xml:"zpid"`
+	Links             Links     `xml:"links"`
+	Address           Address   `xml:"address"`
+	FIPSCounty        string    `xml:"FIPScounty"`
+	UseCode           string    `xml:"useCode"`
+	TaxAssessmentYear int       `xml:"taxAssessmentYear"`
+	TaxAssessment     float64   `xml:"taxAssessment"`
+	YearBuilt         int       `xml:"yearBuilt"`
+	LotSizeSqFt       int       `xml:"lotSizeSqFt"`
+	FinishedSqFt      int       `xml:"finishedSqFt"`
+	Bathrooms         float64   `xml:"bathrooms"`
+	Bedrooms          int       `xml:"bedrooms"`
+	LastSoldDate      string    `xml:"lastSoldDate"`
+	LastSoldPrice     Value     `xml:"lastSoldPrice"`
+	Zestimate         Zestimate `xml:"zestimate"`
+	LocalRealEstate   []Region  `xml:"localRealEstate>region"`
+}
+
+type DeepSearchResults struct {
+	XMLName xml.Name `xml:"searchresults"`
+
+	Request SearchRequest `xml:"request"`
+	Message Message       `xml:"message"`
+
+	Results []DeepSearchResult `xml:"response>results>result"`
+}
+
 const baseUrl = "http://www.zillow.com/webservice/"
 
 const (
@@ -253,11 +283,12 @@ const (
 )
 
 const (
-	getZestimatePath = "GetZestimate"
-	getSearchResults = "GetSearchResults"
-	getChart         = "GetChart"
-	getComps         = "GetComps"
-	getDeepComps     = "GetDeepComps"
+	zestimatePath     = "Zestimate"
+	searchResultsPath = "SearchResults"
+	chartPath         = "Chart"
+	compsPath         = "Comps"
+	deepCompsPath     = "DeepComps"
+	deepSearchPath    = "DeepSearchResults"
 	//TODO other services
 )
 
@@ -266,8 +297,8 @@ type zillow struct {
 	url   string
 }
 
-func (z *zillow) get(servicePath string, values url.Values, result interface{}) error {
-	if resp, err := http.Get(z.url + "/" + servicePath + ".htm?" + values.Encode()); err != nil {
+func (z *zillow) get(path string, values url.Values, result interface{}) error {
+	if resp, err := http.Get(z.url + "/Get" + path + ".htm?" + values.Encode()); err != nil {
 		return err
 	} else if err = xml.NewDecoder(resp.Body).Decode(result); err != nil {
 		return err
@@ -282,7 +313,7 @@ func (z *zillow) GetZestimate(request ZestimateRequest) (*ZestimateResult, error
 		rentzestimateParam: {strconv.FormatBool(request.Rentzestimate)},
 	}
 	var result ZestimateResult
-	if err := z.get(getZestimatePath, values, &result); err != nil {
+	if err := z.get(zestimatePath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
@@ -297,7 +328,7 @@ func (z *zillow) GetSearchResults(request SearchRequest) (*SearchResults, error)
 		rentzestimateParam: {strconv.FormatBool(request.Rentzestimate)},
 	}
 	var result SearchResults
-	if err := z.get(getSearchResults, values, &result); err != nil {
+	if err := z.get(searchResultsPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
@@ -314,7 +345,7 @@ func (z *zillow) GetChart(request ChartRequest) (*ChartResult, error) {
 		chartDurationParam: {request.Duration},
 	}
 	var result ChartResult
-	if err := z.get(getChart, values, &result); err != nil {
+	if err := z.get(chartPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
@@ -329,7 +360,7 @@ func (z *zillow) GetComps(request CompsRequest) (*CompsResult, error) {
 		rentzestimateParam: {strconv.FormatBool(request.Rentzestimate)},
 	}
 	var result CompsResult
-	if err := z.get(getComps, values, &result); err != nil {
+	if err := z.get(compsPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
@@ -344,7 +375,22 @@ func (z *zillow) GetDeepComps(request CompsRequest) (*DeepCompsResult, error) {
 		rentzestimateParam: {strconv.FormatBool(request.Rentzestimate)},
 	}
 	var result DeepCompsResult
-	if err := z.get(getDeepComps, values, &result); err != nil {
+	if err := z.get(deepCompsPath, values, &result); err != nil {
+		return nil, err
+	} else {
+		return &result, nil
+	}
+}
+
+func (z *zillow) GetDeepSearchResults(request SearchRequest) (*DeepSearchResults, error) {
+	values := url.Values{
+		zwsIdParam:         {z.zwsId},
+		addressParam:       {request.Address},
+		cityStateZipParam:  {request.CityStateZip},
+		rentzestimateParam: {strconv.FormatBool(request.Rentzestimate)},
+	}
+	var result DeepSearchResults
+	if err := z.get(deepSearchPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil

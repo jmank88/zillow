@@ -1,0 +1,79 @@
+<SearchResults:searchresults xsi:schemaLocation="http://www.zillow.com/static/xsd/SearchResults.xsd /vstatic/ae1bf8a790b67ef2e902d2bc04046f02/static/xsd/SearchResults.xsd">
+    <request>
+        <address>2114 Bigelow Ave</address>
+        <citystatezip>Seattle, WA</citystatezip>
+    </request>
+    <message>
+        <text>Request successfully processed</text>
+        <code>0</code>
+    </message>
+    <response>
+        <results>
+            <result>
+                <zpid>48749425</zpid>
+                <links>
+                    <homedetails>http://www.zillow.com/homedetails/2114-Bigelow-Ave-N-Seattle-WA-98109/48749425_zpid/</homedetails>
+                    <graphsanddata>http://www.zillow.com/homedetails/charts/48749425_zpid,1year_chartDuration/?cbt=8224687894635748395%7E7%7EjS-H-hFDCRzaVl6bMy4IjMErWd4OhP23IK8vmp4_m9u_SO1ruBhoCA**</graphsanddata>
+                    <mapthishome>http://www.zillow.com/homes/map/48749425_zpid/</mapthishome>
+                    <comparables>http://www.zillow.com/homes/comps/48749425_zpid/</comparables>
+                </links>
+                <address>
+                    <street>2114 Bigelow Ave N</street>
+                    <zipcode>98109</zipcode>
+                    <city>Seattle</city>
+                    <state>WA</state>
+                    <latitude>47.63793</latitude>
+                    <longitude>-122.347936</longitude>
+                </address>
+                <FIPScounty>33</FIPScounty>
+                <useCode>SingleFamily</useCode>
+                <taxAssessmentYear>2008</taxAssessmentYear>
+                <taxAssessment>1054000.0</taxAssessment>
+                <yearBuilt>1924</yearBuilt>
+                <lotSizeSqFt>4680</lotSizeSqFt>
+                <finishedSqFt>3470</finishedSqFt>
+                <bathrooms>3.0</bathrooms>
+                <bedrooms>4</bedrooms>
+                <lastSoldDate>11/26/2008</lastSoldDate>
+                <lastSoldPrice currency="USD">995000</lastSoldPrice>
+                <zestimate>
+                    <amount currency="USD">1219500</amount>
+                    <last-updated>12/31/1969</last-updated>
+                    <oneWeekChange deprecated="true"/>
+                    <valueChange duration="30" currency="USD">-41500</valueChange>
+                    <valuationRange>
+                        <low currency="USD">1024380</low>
+                        <high currency="USD">1378035</high>
+                    </valuationRange>
+                    <percentile>0</percentile>
+                </zestimate>
+                <localRealEstate>
+                    <region id="271856" type="neighborhood" name="East Queen Anne">
+                        <zindexValue>525,397</zindexValue>
+                        <links>
+                            <overview>http://www.zillow.com/local-info/WA-Seattle/East-Queen-Anne/r_271856/</overview>
+                            <forSaleByOwner>http://www.zillow.com/homes/fsbo/East-Queen-Anne-Seattle-WA/</forSaleByOwner>
+                            <forSale>http://www.zillow.com/east-queen-anne-seattle-wa/</forSale>
+                        </links>
+                    </region>
+                    <region id="16037" type="city" name="Seattle">
+                        <zindexValue>381,764</zindexValue>
+                        <links>
+                            <overview>http://www.zillow.com/local-info/WA-Seattle/r_16037/</overview>
+                            <forSaleByOwner>http://www.zillow.com/homes/fsbo/Seattle-WA/</forSaleByOwner>
+                            <forSale>http://www.zillow.com/seattle-wa/</forSale>
+                        </links>
+                    </region>
+                    <region id="59" type="state" name="Washington">
+                        <zindexValue>263,278</zindexValue>
+                        <links>
+                            <overview>http://www.zillow.com/local-info/WA-home-value/r_59/</overview>
+                            <forSaleByOwner>http://www.zillow.com/homes/fsbo/WA/</forSaleByOwner>
+                            <forSale>http://www.zillow.com/wa/</forSale>
+                        </links>
+                    </region>
+                </localRealEstate>
+            </result>
+        </results>
+    </response>
+</SearchResults:searchresults>

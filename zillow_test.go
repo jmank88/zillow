@@ -54,7 +54,7 @@ func testFixtures(t *testing.T, expectedPath string, validateQuery func(url.Valu
 }
 
 func TestGetZestimate(t *testing.T) {
-	server, zillow := testFixtures(t, getZestimatePath, func(values url.Values) {
+	server, zillow := testFixtures(t, zestimatePath, func(values url.Values) {
 		assertOnlyParam(t, values, zpidParam, zpid)
 		assertOnlyParam(t, values, rentzestimateParam, "false")
 	})
@@ -143,7 +143,7 @@ func TestGetZestimate(t *testing.T) {
 }
 
 func TestGetSearchResults(t *testing.T) {
-	server, zillow := testFixtures(t, getSearchResults, func(values url.Values) {
+	server, zillow := testFixtures(t, searchResultsPath, func(values url.Values) {
 		assertOnlyParam(t, values, addressParam, address)
 		assertOnlyParam(t, values, cityStateZipParam, citystatezip)
 		assertOnlyParam(t, values, rentzestimateParam, "false")
@@ -235,7 +235,7 @@ func TestGetSearchResults(t *testing.T) {
 }
 
 func TestGetChart(t *testing.T) {
-	server, zillow := testFixtures(t, getChart, func(values url.Values) {
+	server, zillow := testFixtures(t, chartPath, func(values url.Values) {
 		assertOnlyParam(t, values, zpidParam, zpid)
 		assertOnlyParam(t, values, unitTypeParam, unitType)
 		assertOnlyParam(t, values, widthParam, strconv.Itoa(width))
@@ -265,7 +265,7 @@ func TestGetChart(t *testing.T) {
 }
 
 func TestGetComps(t *testing.T) {
-	server, zillow := testFixtures(t, getComps, func(values url.Values) {
+	server, zillow := testFixtures(t, compsPath, func(values url.Values) {
 		assertOnlyParam(t, values, zpidParam, zpid)
 		assertOnlyParam(t, values, countParam, strconv.Itoa(count))
 		assertOnlyParam(t, values, rentzestimateParam, "false")
@@ -372,7 +372,7 @@ func TestGetComps(t *testing.T) {
 }
 
 func TestGetDeepComp(t *testing.T) {
-	server, zillow := testFixtures(t, getDeepComps, func(values url.Values) {
+	server, zillow := testFixtures(t, deepCompsPath, func(values url.Values) {
 		assertOnlyParam(t, values, zpidParam, zpid)
 		assertOnlyParam(t, values, countParam, strconv.Itoa(count))
 		assertOnlyParam(t, values, rentzestimateParam, "false")
@@ -541,6 +541,106 @@ func TestGetDeepComp(t *testing.T) {
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
+			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+	}
+}
+
+func TestGetDeepSearchResults(t *testing.T) {
+	server, zillow := testFixtures(t, deepSearchPath, func(values url.Values) {
+		assertOnlyParam(t, values, addressParam, address)
+		assertOnlyParam(t, values, cityStateZipParam, citystatezip)
+		assertOnlyParam(t, values, rentzestimateParam, "false")
+	})
+	defer server.Close()
+
+	request := SearchRequest{Address: address, CityStateZip: citystatezip}
+	result, err := zillow.GetDeepSearchResults(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := &DeepSearchResults{
+		XMLName: xml.Name{Space: "SearchResults", Local: "searchresults"},
+		Request: request,
+		Message: Message{
+			Text: "Request successfully processed",
+			Code: 0,
+		},
+		Results: []DeepSearchResult{
+			{
+				XMLName: xml.Name{Local: "result"},
+				Zpid:    "48749425",
+				Links: Links{
+					XMLName:       xml.Name{Local: "links"},
+					HomeDetails:   "http://www.zillow.com/homedetails/2114-Bigelow-Ave-N-Seattle-WA-98109/48749425_zpid/",
+					GraphsAndData: "http://www.zillow.com/homedetails/charts/48749425_zpid,1year_chartDuration/?cbt=8224687894635748395%7E7%7EjS-H-hFDCRzaVl6bMy4IjMErWd4OhP23IK8vmp4_m9u_SO1ruBhoCA**",
+					MapThisHome:   "http://www.zillow.com/homes/map/48749425_zpid/",
+					Comparables:   "http://www.zillow.com/homes/comps/48749425_zpid/",
+				},
+				Address: Address{
+					Street:    "2114 Bigelow Ave N",
+					Zipcode:   "98109",
+					City:      "Seattle",
+					State:     "WA",
+					Latitude:  "47.63793",
+					Longitude: "-122.347936",
+				},
+				FIPSCounty:        "33",
+				UseCode:           "SingleFamily",
+				TaxAssessmentYear: 2008,
+				TaxAssessment:     1054000.0,
+				YearBuilt:         1924,
+				LotSizeSqFt:       4680,
+				FinishedSqFt:      3470,
+				Bathrooms:         3.0,
+				Bedrooms:          4,
+				LastSoldDate:      "11/26/2008",
+				LastSoldPrice:     Value{Currency: "USD", Value: 995000},
+				Zestimate: Zestimate{
+					Amount:      Value{Currency: "USD", Value: 1219500},
+					LastUpdated: "12/31/1969",
+					ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: -41500},
+					Low:         Value{Currency: "USD", Value: 1024380},
+					High:        Value{Currency: "USD", Value: 1378035},
+					Percentile:  "0",
+				},
+				LocalRealEstate: []Region{
+					Region{
+						XMLName:        xml.Name{Local: "region"},
+						ID:             "271856",
+						Type:           "neighborhood",
+						Name:           "East Queen Anne",
+						ZIndex:         "525,397",
+						Overview:       "http://www.zillow.com/local-info/WA-Seattle/East-Queen-Anne/r_271856/",
+						ForSaleByOwner: "http://www.zillow.com/homes/fsbo/East-Queen-Anne-Seattle-WA/",
+						ForSale:        "http://www.zillow.com/east-queen-anne-seattle-wa/",
+					},
+					Region{
+						XMLName:        xml.Name{Local: "region"},
+						ID:             "16037",
+						Type:           "city",
+						Name:           "Seattle",
+						ZIndex:         "381,764",
+						Overview:       "http://www.zillow.com/local-info/WA-Seattle/r_16037/",
+						ForSaleByOwner: "http://www.zillow.com/homes/fsbo/Seattle-WA/",
+						ForSale:        "http://www.zillow.com/seattle-wa/",
+					},
+					Region{
+						XMLName:        xml.Name{Local: "region"},
+						ID:             "59",
+						Type:           "state",
+						Name:           "Washington",
+						ZIndex:         "263,278",
+						Overview:       "http://www.zillow.com/local-info/WA-home-value/r_59/",
+						ForSaleByOwner: "http://www.zillow.com/homes/fsbo/WA/",
+						ForSale:        "http://www.zillow.com/wa/",
+					},
+				},
+			},
+		},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Fatalf("expected:\n %s\n\n but got:\n %s\n\n diff:\n %s\n",
 			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
 	}
 }

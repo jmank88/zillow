@@ -13,7 +13,7 @@ This api is a work in progress.
 
 ### Property Details
 - GetDeepComps
-- TODO GetDeepSearchResults
+- GetDeepSearchResults
 - TODO GetUpdatedPropertyDetails
 
 ### Neighborhood Data
