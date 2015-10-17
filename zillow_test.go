@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -19,6 +20,9 @@ const (
 	zpid         = "48749425"
 	address      = "2114 Bigelow Ave"
 	citystatezip = "Seattle, WA"
+	unitType     = "percent"
+	width        = 300
+	height       = 150
 )
 
 func assertOnlyParam(t *testing.T, values url.Values, param, expected string) {
@@ -221,6 +225,36 @@ func TestGetSearchResults(t *testing.T) {
 				},
 			},
 		},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Fatalf("expected:\n %s\n\n but got:\n %s\n\n diff:\n %s\n",
+			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+	}
+}
+
+func TestGetChart(t *testing.T) {
+	server, zillow := testFixtures(t, getChart, func(values url.Values) {
+		assertOnlyParam(t, values, zpidParam, zpid)
+		assertOnlyParam(t, values, unitTypeParam, unitType)
+		assertOnlyParam(t, values, widthParam, strconv.Itoa(width))
+		assertOnlyParam(t, values, heightParam, strconv.Itoa(height))
+	})
+	defer server.Close()
+
+	request := ChartRequest{Zpid: zpid, UnitType: unitType, Width: width, Height: height}
+	result, err := zillow.GetChart(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := &ChartResult{
+		XMLName: xml.Name{Space: "http://www.zillowstatic.com/vstatic/8d9b5f1/static/xsd/Chart.xsd", Local: "chart"},
+		Request: request,
+		Message: Message{
+			Text: "Request successfully processed",
+			Code: 0,
+		},
+		Url: "http://www.zillow.com/app?chartDuration=1year&chartType=partner&height=150&page=webservice%2FGetChart&service=chart&showPercent=true&width=300&zpid=48749425",
 	}
 
 	if !reflect.DeepEqual(result, expected) {

@@ -10,7 +10,7 @@ GetZestimate
 
 GetSearchResults
 
-TODO GetChart
+GetChart
 
 TODO GetComps
 

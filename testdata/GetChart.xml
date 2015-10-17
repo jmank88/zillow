@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Chart:chart xmlns:Chart="http://www.zillowstatic.com/vstatic/8d9b5f1/static/xsd/Chart.xsd">
+    <request>
+        <zpid>48749425</zpid>
+        <unit-type>percent</unit-type>
+        <width>300</width>
+        <height>150</height>
+    </request>
+    <message>
+        <text>Request successfully processed</text>
+        <code>0</code>
+    </message>
+    <response>
+        <url>http://www.zillow.com/app?chartDuration=1year&amp;chartType=partner&amp;height=150&amp;page=webservice%2FGetChart&amp;service=chart&amp;showPercent=true&amp;width=300&amp;zpid=48749425</url>
+    </response>
+</Chart:chart>
+<!-- H:11  T:1ms  S:311 -->

@@ -12,7 +12,7 @@ type Zillow interface {
 	// Home Valuation
 	GetZestimate(ZestimateRequest) (*ZestimateResult, error)
 	GetSearchResults(SearchRequest) (*SearchResults, error)
-	//GetChart()
+	GetChart(ChartRequest) (*ChartResult, error)
 	//GetComps()
 
 	// Property Details
@@ -39,9 +39,9 @@ func NewZillow(zwsId string) Zillow {
 }
 
 type Message struct {
-	Text string `xml:"text"`
-	Code int    `xml:"code"`
-	//TODO limit?
+	Text         string `xml:"text"`
+	Code         int    `xml:"code"`
+	LimitWarning bool   `xml:"limit-warning"`
 }
 
 type Address struct {
@@ -145,6 +145,22 @@ type SearchResult struct {
 	LocalRealEstate []Region  `xml:"localRealEstate>region"`
 }
 
+type ChartRequest struct {
+	Zpid     string `xml:"zpid"`
+	UnitType string `xml:"unit-type"`
+	Width    int    `xml:"width"`
+	Height   int    `xml:"height"`
+	Duration string `xml:"chartDuration"`
+}
+
+type ChartResult struct {
+	XMLName xml.Name `xml:"chart"`
+
+	Request ChartRequest `xml:"request"`
+	Message Message      `xml:"message"`
+	Url     string       `xml:"response>url"`
+}
+
 const baseUrl = "http://www.zillow.com/webservice/"
 
 const (
@@ -153,11 +169,16 @@ const (
 	rentzestimateParam = "rentzestimate"
 	addressParam       = "address"
 	cityStateZipParam  = "citystatezip"
+	unitTypeParam      = "unit-type"
+	widthParam         = "width"
+	heightParam        = "height"
+	chartDurationParam = "chartDuration"
 )
 
 const (
 	getZestimatePath = "GetZestimate"
 	getSearchResults = "GetSearchResults"
+	getChart         = "GetChart"
 	//TODO other services
 )
 
@@ -198,6 +219,23 @@ func (z *zillow) GetSearchResults(request SearchRequest) (*SearchResults, error)
 	}
 	var result SearchResults
 	if err := z.get(getSearchResults, values, &result); err != nil {
+		return nil, err
+	} else {
+		return &result, nil
+	}
+}
+
+func (z *zillow) GetChart(request ChartRequest) (*ChartResult, error) {
+	values := url.Values{
+		zwsIdParam:         {z.zwsId},
+		zpidParam:          {request.Zpid},
+		unitTypeParam:      {request.UnitType},
+		widthParam:         {strconv.Itoa(request.Width)},
+		heightParam:        {strconv.Itoa(request.Height)},
+		chartDurationParam: {request.Duration},
+	}
+	var result ChartResult
+	if err := z.get(getChart, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
