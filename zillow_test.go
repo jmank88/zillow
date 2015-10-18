@@ -26,6 +26,9 @@ const (
 	count        = 5
 	city         = "lacey"
 	state        = "WA"
+	regionCity   = "seattle"
+	regionState  = "wa"
+	childType    = "neighborhood"
 )
 
 func assertOnlyParam(t *testing.T, values url.Values, param, expected string) {
@@ -97,8 +100,8 @@ func TestGetZestimate(t *testing.T) {
 			Low:         Value{Currency: "USD", Value: 1024380},
 			High:        Value{Currency: "USD", Value: 1378035},
 		},
-		LocalRealEstate: []Region{
-			Region{
+		LocalRealEstate: []RealEstateRegion{
+			RealEstateRegion{
 				XMLName:             xml.Name{Local: "region"},
 				ID:                  "271856",
 				Type:                "neighborhood",
@@ -109,7 +112,7 @@ func TestGetZestimate(t *testing.T) {
 				ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/East-Queen-Anne-Seattle-WA/",
 				ForSale:             "http://www.zillow.com/east-queen-anne-seattle-wa/",
 			},
-			Region{
+			RealEstateRegion{
 				XMLName:             xml.Name{Local: "region"},
 				ID:                  "16037",
 				Type:                "city",
@@ -120,7 +123,7 @@ func TestGetZestimate(t *testing.T) {
 				ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/Seattle-WA/",
 				ForSale:             "http://www.zillow.com/seattle-wa/",
 			},
-			Region{
+			RealEstateRegion{
 				XMLName:             xml.Name{Local: "region"},
 				ID:                  "59",
 				Type:                "state",
@@ -191,8 +194,8 @@ func TestGetSearchResults(t *testing.T) {
 					High:        Value{Currency: "USD", Value: 1378035},
 					Percentile:  "0",
 				},
-				LocalRealEstate: []Region{
-					Region{
+				LocalRealEstate: []RealEstateRegion{
+					RealEstateRegion{
 						XMLName:             xml.Name{Local: "region"},
 						ID:                  "271856",
 						Type:                "neighborhood",
@@ -203,7 +206,7 @@ func TestGetSearchResults(t *testing.T) {
 						ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/East-Queen-Anne-Seattle-WA/",
 						ForSale:             "http://www.zillow.com/east-queen-anne-seattle-wa/",
 					},
-					Region{
+					RealEstateRegion{
 						XMLName:             xml.Name{Local: "region"},
 						ID:                  "16037",
 						Type:                "city",
@@ -214,7 +217,7 @@ func TestGetSearchResults(t *testing.T) {
 						ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/Seattle-WA/",
 						ForSale:             "http://www.zillow.com/seattle-wa/",
 					},
-					Region{
+					RealEstateRegion{
 						XMLName:             xml.Name{Local: "region"},
 						ID:                  "59",
 						Type:                "state",
@@ -428,8 +431,8 @@ func TestGetDeepComp(t *testing.T) {
 				High:        Value{Currency: "USD", Value: 1378035},
 				Percentile:  "95",
 			},
-			LocalRealEstate: []Region{
-				Region{
+			LocalRealEstate: []RealEstateRegion{
+				RealEstateRegion{
 					XMLName:             xml.Name{Local: "region"},
 					ID:                  "271856",
 					Type:                "neighborhood",
@@ -440,7 +443,7 @@ func TestGetDeepComp(t *testing.T) {
 					ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/East-Queen-Anne-Seattle-WA/",
 					ForSale:             "http://www.zillow.com/east-queen-anne-seattle-wa/",
 				},
-				Region{
+				RealEstateRegion{
 					XMLName:             xml.Name{Local: "region"},
 					ID:                  "16037",
 					Type:                "city",
@@ -451,7 +454,7 @@ func TestGetDeepComp(t *testing.T) {
 					ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/Seattle-WA/",
 					ForSale:             "http://www.zillow.com/seattle-wa/",
 				},
-				Region{
+				RealEstateRegion{
 					XMLName:             xml.Name{Local: "region"},
 					ID:                  "59",
 					Type:                "state",
@@ -605,8 +608,8 @@ func TestGetDeepSearchResults(t *testing.T) {
 					High:        Value{Currency: "USD", Value: 1378035},
 					Percentile:  "0",
 				},
-				LocalRealEstate: []Region{
-					Region{
+				LocalRealEstate: []RealEstateRegion{
+					RealEstateRegion{
 						XMLName:        xml.Name{Local: "region"},
 						ID:             "271856",
 						Type:           "neighborhood",
@@ -616,7 +619,7 @@ func TestGetDeepSearchResults(t *testing.T) {
 						ForSaleByOwner: "http://www.zillow.com/homes/fsbo/East-Queen-Anne-Seattle-WA/",
 						ForSale:        "http://www.zillow.com/east-queen-anne-seattle-wa/",
 					},
-					Region{
+					RealEstateRegion{
 						XMLName:        xml.Name{Local: "region"},
 						ID:             "16037",
 						Type:           "city",
@@ -626,7 +629,7 @@ func TestGetDeepSearchResults(t *testing.T) {
 						ForSaleByOwner: "http://www.zillow.com/homes/fsbo/Seattle-WA/",
 						ForSale:        "http://www.zillow.com/seattle-wa/",
 					},
-					Region{
+					RealEstateRegion{
 						XMLName:        xml.Name{Local: "region"},
 						ID:             "59",
 						Type:           "state",
@@ -643,44 +646,6 @@ func TestGetDeepSearchResults(t *testing.T) {
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Fatalf("expected:\n %s\n\n but got:\n %s\n\n diff:\n %s\n",
-			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
-	}
-}
-
-func TestGetRegionChart(t *testing.T) {
-	server, zillow := testFixtures(t, regionChartPath, func(values url.Values) {
-		assertOnlyParam(t, values, cityParam, city)
-		assertOnlyParam(t, values, stateParam, state)
-		assertOnlyParam(t, values, unitTypeParam, unitType)
-		assertOnlyParam(t, values, widthParam, strconv.Itoa(width))
-		assertOnlyParam(t, values, heightParam, strconv.Itoa(height))
-	})
-	defer server.Close()
-
-	request := RegionChartRequest{
-		City:     city,
-		State:    state,
-		UnitType: unitType,
-		Width:    width,
-		Height:   height,
-	}
-	result, err := zillow.GetRegionChart(request)
-	if err != nil {
-		t.Fatal(err)
-	}
-	expected := &RegionChartResult{
-		XMLName: xml.Name{Space: "http://www.zillow.com/static/xsd/RegionChart.xsd", Local: "regionchart"},
-		Request: request,
-		Message: Message{
-			Text: "Request successfully processed",
-			Code: 0,
-		},
-		Url:    "http://localhost:8080/app?chartDuration=1year&chartType=partner&cityRegionId=5470&countyRegionId=0&height=150&nationRegionId=0&page=webservice%2FGetRegionChart&service=chart&showCity=true&showPercent=true&stateRegionId=0&width=300&zipRegionId=0",
-		Zindex: Value{Currency: "USD", Value: 463115},
-	}
-
-	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
 			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
 	}
 }
@@ -758,6 +723,113 @@ func TestGetUpdatedPropertyDetails(t *testing.T) {
 			FloorCovering:  "Hardwood, Carpet, Tile",
 			Rooms:          "Laundry room, Walk-in closet, Master bath, Office, Dining room, Family room, Breakfast nook",
 		},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
+			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+	}
+}
+
+func TestGetRegionChildren(t *testing.T) {
+	server, zillow := testFixtures(t, regionChildrenPath, func(values url.Values) {
+		assertOnlyParam(t, values, cityParam, regionCity)
+		assertOnlyParam(t, values, stateParam, regionState)
+		assertOnlyParam(t, values, childTypeParam, childType)
+	})
+	defer server.Close()
+
+	request := RegionChildrenRequest{
+		City:      regionCity,
+		State:     regionState,
+		ChildType: childType,
+	}
+	result, err := zillow.GetRegionChildren(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := &RegionChildren{
+		XMLName: xml.Name{Space: "http://www.zillow.com/static/xsd/RegionChildren.xsd", Local: "regionchildren"},
+		Request: request,
+		Message: Message{
+			Text: "Request successfully processed",
+			Code: 0,
+		},
+		Region: Region{
+			Id:        "16037",
+			Country:   "United States",
+			State:     "Washington",
+			County:    "King",
+			City:      "Seattle",
+			CityUrl:   "http://www.zillow.com/real-estate/WA-Seattle",
+			Latitude:  "47.590955",
+			Longitude: "-122.382608",
+		},
+		SubRegionType: "neighborhood",
+		Regions: []Region{
+			{
+				Id:        "343997",
+				Name:      "Alki",
+				ZIndex:    Value{Currency: "USD", Value: 537360},
+				Url:       "http://www.zillow.com/real-estate/WA-Seattle/Alki",
+				Latitude:  "47.56955",
+				Longitude: "-122.397729",
+			},
+			{
+				Id:        "250788",
+				Name:      "Greenwood",
+				ZIndex:    Value{Currency: "USD", Value: 433246},
+				Url:       "http://www.zillow.com/real-estate/WA-Seattle/Greenwood",
+				Latitude:  "47.694114",
+				Longitude: "-122.355228",
+			},
+			{
+				Id:        "252248",
+				Name:      "Wallingford",
+				ZIndex:    Value{Currency: "USD", Value: 591847},
+				Url:       "http://www.zillow.com/real-estate/WA-Seattle/Wallingford",
+				Latitude:  "47.659711",
+				Longitude: "-122.333821",
+			},
+		},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
+			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+	}
+}
+
+func TestGetRegionChart(t *testing.T) {
+	server, zillow := testFixtures(t, regionChartPath, func(values url.Values) {
+		assertOnlyParam(t, values, cityParam, city)
+		assertOnlyParam(t, values, stateParam, state)
+		assertOnlyParam(t, values, unitTypeParam, unitType)
+		assertOnlyParam(t, values, widthParam, strconv.Itoa(width))
+		assertOnlyParam(t, values, heightParam, strconv.Itoa(height))
+	})
+	defer server.Close()
+
+	request := RegionChartRequest{
+		City:     city,
+		State:    state,
+		UnitType: unitType,
+		Width:    width,
+		Height:   height,
+	}
+	result, err := zillow.GetRegionChart(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := &RegionChartResult{
+		XMLName: xml.Name{Space: "http://www.zillow.com/static/xsd/RegionChart.xsd", Local: "regionchart"},
+		Request: request,
+		Message: Message{
+			Text: "Request successfully processed",
+			Code: 0,
+		},
+		Url:    "http://localhost:8080/app?chartDuration=1year&chartType=partner&cityRegionId=5470&countyRegionId=0&height=150&nationRegionId=0&page=webservice%2FGetRegionChart&service=chart&showCity=true&showPercent=true&stateRegionId=0&width=300&zipRegionId=0",
+		Zindex: Value{Currency: "USD", Value: 463115},
 	}
 
 	if !reflect.DeepEqual(result, expected) {

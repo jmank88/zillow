@@ -14,10 +14,10 @@ This api is a work in progress.
 ### Property Details
 - GetDeepComps
 - GetDeepSearchResults
-- TODO GetUpdatedPropertyDetails
+- GetUpdatedPropertyDetails
 
 ### Neighborhood Data
-- TODO GetRegionChildren
+- GetRegionChildren
 - GetRegionChart
 
 ### Mortgage Rates

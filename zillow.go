@@ -21,7 +21,7 @@ type Zillow interface {
 	GetUpdatedPropertyDetails(request UpdatedPropertyDetailsRequest) (*UpdatedPropertyDetails, error)
 
 	// Neighborhood Data
-	//GetRegionChildren()
+	GetRegionChildren(RegionChildrenRequest) (*RegionChildren, error)
 	GetRegionChart(RegionChartRequest) (*RegionChartResult, error)
 
 	// Mortgage Rates
@@ -78,7 +78,7 @@ type ZestimateRequest struct {
 	Rentzestimate bool   `xml:"rentzestimate"`
 }
 
-type Region struct {
+type RealEstateRegion struct {
 	XMLName xml.Name `xml:"region"`
 
 	ID                  string  `xml:"id,attr"`
@@ -108,10 +108,10 @@ type ZestimateResult struct {
 	Request ZestimateRequest `xml:"request"`
 	Message Message          `xml:"message"`
 
-	Links           Links     `xml:"response>links"`
-	Address         Address   `xml:"response>address"`
-	Zestimate       Zestimate `xml:"response>zestimate"`
-	LocalRealEstate []Region  `xml:"response>localRealEstate>region"`
+	Links           Links              `xml:"response>links"`
+	Address         Address            `xml:"response>address"`
+	Zestimate       Zestimate          `xml:"response>zestimate"`
+	LocalRealEstate []RealEstateRegion `xml:"response>localRealEstate>region"`
 
 	// Regions
 	ZipcodeID string `xml:"response>regions>zipcode-id"`
@@ -140,10 +140,10 @@ type SearchResult struct {
 
 	Zpid string `xml:"zpid"`
 
-	Links           Links     `xml:"links"`
-	Address         Address   `xml:"address"`
-	Zestimate       Zestimate `xml:"zestimate"`
-	LocalRealEstate []Region  `xml:"localRealEstate>region"`
+	Links           Links              `xml:"links"`
+	Address         Address            `xml:"address"`
+	Zestimate       Zestimate          `xml:"zestimate"`
+	LocalRealEstate []RealEstateRegion `xml:"localRealEstate>region"`
 }
 
 type ChartRequest struct {
@@ -194,20 +194,20 @@ type CompsResult struct {
 }
 
 type DeepPrincipal struct {
-	Zpid             string    `xml:"zpid"`
-	Links            Links     `xml:"links"`
-	Address          Address   `xml:"address"`
-	TaxAssesmentYear int       `xml:"taxAssessmentYear"`
-	TaxAssesment     float64   `xml:"taxAssessment"`
-	YearBuilt        int       `xml:"yearBuilt"`
-	LotSizeSqFt      int       `xml:"lotSizeSqFt"`
-	FinishedSqFt     int       `xml:"finishedSqFt"`
-	Bathrooms        float64   `xml:"bathrooms"`
-	Bedrooms         int       `xml:"bedrooms"`
-	LastSoldDate     string    `xml:"lastSoldDate"`
-	LastSoldPrice    Value     `xml:"lastSoldPrice"`
-	Zestimate        Zestimate `xml:"zestimate"`
-	LocalRealEstate  []Region  `xml:"localRealEstate>region"`
+	Zpid             string             `xml:"zpid"`
+	Links            Links              `xml:"links"`
+	Address          Address            `xml:"address"`
+	TaxAssesmentYear int                `xml:"taxAssessmentYear"`
+	TaxAssesment     float64            `xml:"taxAssessment"`
+	YearBuilt        int                `xml:"yearBuilt"`
+	LotSizeSqFt      int                `xml:"lotSizeSqFt"`
+	FinishedSqFt     int                `xml:"finishedSqFt"`
+	Bathrooms        float64            `xml:"bathrooms"`
+	Bedrooms         int                `xml:"bedrooms"`
+	LastSoldDate     string             `xml:"lastSoldDate"`
+	LastSoldPrice    Value              `xml:"lastSoldPrice"`
+	Zestimate        Zestimate          `xml:"zestimate"`
+	LocalRealEstate  []RealEstateRegion `xml:"localRealEstate>region"`
 }
 
 type DeepComp struct {
@@ -240,22 +240,22 @@ type DeepCompsResult struct {
 type DeepSearchResult struct {
 	XMLName xml.Name `xml:"result"`
 
-	Zpid              string    `xml:"zpid"`
-	Links             Links     `xml:"links"`
-	Address           Address   `xml:"address"`
-	FIPSCounty        string    `xml:"FIPScounty"`
-	UseCode           string    `xml:"useCode"`
-	TaxAssessmentYear int       `xml:"taxAssessmentYear"`
-	TaxAssessment     float64   `xml:"taxAssessment"`
-	YearBuilt         int       `xml:"yearBuilt"`
-	LotSizeSqFt       int       `xml:"lotSizeSqFt"`
-	FinishedSqFt      int       `xml:"finishedSqFt"`
-	Bathrooms         float64   `xml:"bathrooms"`
-	Bedrooms          int       `xml:"bedrooms"`
-	LastSoldDate      string    `xml:"lastSoldDate"`
-	LastSoldPrice     Value     `xml:"lastSoldPrice"`
-	Zestimate         Zestimate `xml:"zestimate"`
-	LocalRealEstate   []Region  `xml:"localRealEstate>region"`
+	Zpid              string             `xml:"zpid"`
+	Links             Links              `xml:"links"`
+	Address           Address            `xml:"address"`
+	FIPSCounty        string             `xml:"FIPScounty"`
+	UseCode           string             `xml:"useCode"`
+	TaxAssessmentYear int                `xml:"taxAssessmentYear"`
+	TaxAssessment     float64            `xml:"taxAssessment"`
+	YearBuilt         int                `xml:"yearBuilt"`
+	LotSizeSqFt       int                `xml:"lotSizeSqFt"`
+	FinishedSqFt      int                `xml:"finishedSqFt"`
+	Bathrooms         float64            `xml:"bathrooms"`
+	Bedrooms          int                `xml:"bedrooms"`
+	LastSoldDate      string             `xml:"lastSoldDate"`
+	LastSoldPrice     Value              `xml:"lastSoldPrice"`
+	Zestimate         Zestimate          `xml:"zestimate"`
+	LocalRealEstate   []RealEstateRegion `xml:"localRealEstate>region"`
 }
 
 type DeepSearchResults struct {
@@ -354,6 +354,39 @@ type UpdatedPropertyDetails struct {
 	MiddleSchool     string      `xml:"middleSchool"`
 }
 
+type RegionChildrenRequest struct {
+	RegionId  string `xml:"regionId"`
+	State     string `xml:"state"`
+	Country   string `xml:"country"`
+	City      string `xml:"city"`
+	ChildType string `xml:"childtype"`
+}
+
+type Region struct {
+	Id        string `xml:"id"`
+	Name      string `xml:"name"`
+	Country   string `xml:"country"`
+	State     string `xml:"state"`
+	County    string `xml:"county"`
+	City      string `xml:"city"`
+	CityUrl   string `xml:"cityurl"`
+	Latitude  string `xml:"latitude"`
+	Longitude string `xml:"longitude"`
+	ZIndex    Value  `xml:"zindex"`
+	Url       string `xml:"url"`
+}
+
+type RegionChildren struct {
+	XMLName xml.Name `xml:"regionchildren"`
+
+	Request RegionChildrenRequest `xml:"request"`
+	Message Message               `xml:"message"`
+
+	Region        Region   `xml:"response>region"`
+	SubRegionType string   `xml:"response>subregiontype"`
+	Regions       []Region `xml:"response>list>region"`
+}
+
 const baseUrl = "http://www.zillow.com/webservice/"
 
 const (
@@ -371,6 +404,9 @@ const (
 	stateParam         = "state"
 	neighboorhoodParam = "neightborhood"
 	zipParam           = "zip"
+	countryParam       = "country"
+	childTypeParam     = "childtype"
+	regionIdParam      = "regionId"
 )
 
 const (
@@ -381,6 +417,7 @@ const (
 	deepCompsPath              = "DeepComps"
 	deepSearchPath             = "DeepSearchResults"
 	updatedPropertyDetailsPath = "UpdatedPropertyDetails"
+	regionChildrenPath         = "RegionChildren"
 	regionChartPath            = "RegionChart"
 	//TODO other services
 )
@@ -497,6 +534,23 @@ func (z *zillow) GetUpdatedPropertyDetails(request UpdatedPropertyDetailsRequest
 	}
 	var result UpdatedPropertyDetails
 	if err := z.get(updatedPropertyDetailsPath, values, &result); err != nil {
+		return nil, err
+	} else {
+		return &result, nil
+	}
+}
+
+func (z *zillow) GetRegionChildren(request RegionChildrenRequest) (*RegionChildren, error) {
+	values := url.Values{
+		zwsIdParam:     {z.zwsId},
+		regionIdParam:  {request.RegionId},
+		stateParam:     {request.State},
+		countryParam:   {request.Country},
+		cityParam:      {request.City},
+		childTypeParam: {request.ChildType},
+	}
+	var result RegionChildren
+	if err := z.get(regionChildrenPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil

@@ -1,0 +1,50 @@
+<RegionChildren:regionchildren xsi:schemaLocation="http://www.zillow.com/static/xsd/RegionChildren.xsd /vstatic/d943415ffe18c558a8ddf507a198cd5e/static/xsd/RegionChildren.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:RegionChildren="http://www.zillow.com/static/xsd/RegionChildren.xsd">
+    <request>
+        <state>wa</state>
+        <city>seattle</city>
+        <childtype>neighborhood</childtype>
+    </request>
+    <message>
+        <text>Request successfully processed</text>
+        <code>0</code>
+    </message>
+    <response>
+        <region>
+            <id>16037</id>
+            <country>United States</country>
+            <state>Washington</state>
+            <county>King</county>
+            <city>Seattle</city>
+            <cityurl>http://www.zillow.com/real-estate/WA-Seattle</cityurl>
+            <latitude>47.590955</latitude>
+            <longitude>-122.382608</longitude>
+        </region>
+        <subregiontype>neighborhood</subregiontype>
+        <list>
+            <region>
+                <id>343997</id>
+                <name>Alki</name>
+                <zindex currency="USD">537360</zindex>
+                <url>http://www.zillow.com/real-estate/WA-Seattle/Alki</url>
+                <latitude>47.56955</latitude>
+                <longitude>-122.397729</longitude>
+            </region>
+            <region>
+                <id>250788</id>
+                <name>Greenwood</name>
+                <zindex currency="USD">433246</zindex>
+                <url>http://www.zillow.com/real-estate/WA-Seattle/Greenwood</url>
+                <latitude>47.694114</latitude>
+                <longitude>-122.355228</longitude>
+            </region>
+            <region>
+                <id>252248</id>
+                <name>Wallingford</name>
+                <zindex currency="USD">591847</zindex>
+                <url>http://www.zillow.com/real-estate/WA-Seattle/Wallingford</url>
+                <latitude>47.659711</latitude>
+                <longitude>-122.333821</longitude>
+            </region>
+        </list>
+    </response>
+</RegionChildren:regionchildren>
