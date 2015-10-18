@@ -684,3 +684,84 @@ func TestGetRegionChart(t *testing.T) {
 			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
 	}
 }
+
+func TestGetUpdatedPropertyDetails(t *testing.T) {
+	server, zillow := testFixtures(t, updatedPropertyDetailsPath, func(values url.Values) {
+		assertOnlyParam(t, values, zpidParam, zpid)
+	})
+	defer server.Close()
+
+	request := UpdatedPropertyDetailsRequest{
+		Zpid: zpid,
+	}
+	result, err := zillow.GetUpdatedPropertyDetails(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := &UpdatedPropertyDetails{
+		XMLName: xml.Name{Space: "http://www.zillow.com/static/xsd/UpdatedPropertyDetails.xsd", Local: "updatedPropertyDetails"},
+		Request: request,
+		Message: Message{
+			Text: "Request successfully processed",
+			Code: 0,
+		},
+		PageViewCountMonth: 172,
+		PageViewCountTotal: 4149,
+		Address: Address{
+			Street:    "2114 Bigelow Ave N",
+			Zipcode:   "98109",
+			City:      "Seattle",
+			State:     "WA",
+			Latitude:  "47.637924",
+			Longitude: "-122.347929",
+		},
+		Price: Value{Currency: "USD", Value: 1290000},
+		Posting: Posting{
+			Status:          "Active",
+			AgentName:       "John Blacksmith",
+			AgentProfileUrl: "/profile/John.Blacksmith",
+			Brokerage:       "Lake and Company Real Estate",
+			Type:            "For sale by agent",
+			LastUpdatedDate: "2008-06-05 10:28:00.0",
+			ExternalUrl:     "http://mls.lakere.com/srch_mls/detail.php?mode=ag&LN=28097669&t=listings&l=",
+			MLS:             "28097669",
+		},
+		HomeDetailsLink:  "http://www.zillow.com/HomeDetails.htm?zprop=48749425",
+		PhotoGalleryLink: "http://www.zillow.com/Gallery.htm?zpid=48749425",
+		HomeInfoLink:     "http://www.zillow.com/HomeInfo.htm?zprop=48749425",
+		Images: Images{
+			Count: 17,
+			Urls: []string{
+				"http://images3.zillow.com/is/image/i0/i0/i64/ISz23uixze1pr7.jpg?op_sharpen=1&qlt=90&size=400,400",
+				"http://images1.zillow.com/is/image/i0/i0/i64/ISz23uj5vihxnn.jpg?op_sharpen=1&qlt=90&size=400,400",
+				"http://images1.zillow.com/is/image/i0/i0/i64/ISz0l5yjj5pajn.jpg?op_sharpen=1&qlt=90&size=400,400",
+				"http://images2.zillow.com/is/image/i0/i0/i64/ISz23ukda6z543.jpg?op_sharpen=1&qlt=90&size=400,400",
+				"http://images1.zillow.com/is/image/i0/i0/i64/ISz0l5xk0loazn.jpg?op_sharpen=1&qlt=90&size=400,400",
+			},
+		},
+		EditedFacts: EditedFacts{
+			UseCode:        "Single family",
+			Bedrooms:       4,
+			Bathrooms:      3,
+			FinishedSqFt:   3470,
+			LotSizeSqFt:    4680,
+			YearBuilt:      1924,
+			YearUpdated:    2003,
+			NumFloors:      2,
+			Basement:       "Finished",
+			Roof:           "Composition",
+			View:           "Water, City, Mountain",
+			ParkingType:    "Off-street",
+			HeatingSources: "Gas",
+			HeatingSystem:  "Forced air",
+			Appliances:     "Dishwasher, Dryer, Freezer, Garbage disposal, Microwave, Range / Oven, Refrigerator, Washer",
+			FloorCovering:  "Hardwood, Carpet, Tile",
+			Rooms:          "Laundry room, Walk-in closet, Master bath, Office, Dining room, Family room, Breakfast nook",
+		},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
+			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+	}
+}

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UpdatedPropertyDetails:updatedPropertyDetails
+        xsi:schemaLocation="http://www.zillow.com/static/xsd/UpdatedPropertyDetails.xsd /vstatic/e6e5f302965f32ad16114f7a97ba3d89/static/xsd/UpdatedPropertyDetails.xsd"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:UpdatedPropertyDetails="http://www.zillow.com/static/xsd/UpdatedPropertyDetails.xsd">
+    <request>
+        <zpid>48749425</zpid>
+    </request>
+    <message>
+        <text>Request successfully processed</text>
+        <code>0</code>
+    </message>
+    <response>
+        <zpid>48749425</zpid>
+        <pageViewCount>
+            <currentMonth>172</currentMonth>
+            <total>4149</total>
+        </pageViewCount>
+        <address>
+            <street>2114 Bigelow Ave N</street>
+            <zipcode>98109</zipcode>
+            <city>Seattle</city>
+            <state>WA</state>
+            <latitude>47.637924</latitude>
+            <longitude>-122.347929</longitude>
+        </address>
+        <posting>
+            <status>Active</status>
+            <agentName>John Blacksmith</agentName>
+            <agentProfileUrl>/profile/John.Blacksmith</agentProfileUrl>
+            <brokerage>Lake and Company Real Estate</brokerage>
+            <type>For sale by agent</type>
+            <lastUpdatedDate>2008-06-05 10:28:00.0</lastUpdatedDate>
+            <externalUrl>http://mls.lakere.com/srch_mls/detail.php?mode=ag&amp;LN=28097669&amp;t=listings&amp;l=</externalUrl>
+            <mls>28097669</mls>
+        </posting>
+        <price currency="USD">1290000</price>
+        <links>
+            <homeDetails>http://www.zillow.com/HomeDetails.htm?zprop=48749425</homeDetails>
+            <photoGallery>http://www.zillow.com/Gallery.htm?zpid=48749425</photoGallery>
+            <homeInfo>http://www.zillow.com/HomeInfo.htm?zprop=48749425</homeInfo>
+        </links>
+        <images>
+            <count>17</count>
+            <image>
+                <url>http://images3.zillow.com/is/image/i0/i0/i64/ISz23uixze1pr7.jpg?op_sharpen=1&amp;qlt=90&amp;size=400,400</url>
+                <url>http://images1.zillow.com/is/image/i0/i0/i64/ISz23uj5vihxnn.jpg?op_sharpen=1&amp;qlt=90&amp;size=400,400</url>
+                <url>http://images1.zillow.com/is/image/i0/i0/i64/ISz0l5yjj5pajn.jpg?op_sharpen=1&amp;qlt=90&amp;size=400,400</url>
+                <url>http://images2.zillow.com/is/image/i0/i0/i64/ISz23ukda6z543.jpg?op_sharpen=1&amp;qlt=90&amp;size=400,400</url>
+                <url>http://images1.zillow.com/is/image/i0/i0/i64/ISz0l5xk0loazn.jpg?op_sharpen=1&amp;qlt=90&amp;size=400,400</url>
+            </image>
+        </images>
+        <editedFacts>
+            <useCode>Single family</useCode>
+            <bedrooms>4</bedrooms>
+            <bathrooms>3.0</bathrooms>
+            <finishedSqFt>3470</finishedSqFt>
+            <lotSizeSqFt>4680</lotSizeSqFt>
+            <yearBuilt>1924</yearBuilt>
+            <yearUpdated>2003</yearUpdated>
+            <numFloors>2</numFloors>
+            <basement>Finished</basement>
+            <roof>Composition</roof>
+            <view>Water, City, Mountain</view>
+            <parkingType>Off-street</parkingType>
+            <heatingSources>Gas</heatingSources>
+            <heatingSystem>Forced air</heatingSystem>
+            <appliances>Dishwasher, Dryer, Freezer, Garbage disposal, Microwave, Range / Oven, Refrigerator, Washer</appliances>
+            <floorCovering>Hardwood, Carpet, Tile</floorCovering>
+            <rooms>Laundry room, Walk-in closet, Master bath, Office, Dining room, Family room, Breakfast nook</rooms>
+        </editedFacts>
+        <homeDescription>Bright, spacious, 4 bedroom/3 bath Craftsman, with stunning, expansive views, on one of Queen
+            Anne's finest streets. Views of Lk Union, Lk Washington,the Cascades from Mt. Baker to Mt. Rainier, and the
+            city-from two levels and 2 view decks. Craftsman charm intact: hardwood floors, cove moldings, crystal
+            doorknobs, Batchelder tile fireplace. Huge gourmet eat-in kitchen with slab granite countertops, deluxe
+            master suite, theater-like media room, level rear yard with garden space and covered patio.
+        </homeDescription>
+        <neighborhood>Queen Anne</neighborhood>
+        <schoolDistrict>Seattle</schoolDistrict>
+        <elementarySchool>John Hay</elementarySchool>
+        <middleSchool>McClure</middleSchool>
+    </response>
+</UpdatedPropertyDetails:updatedPropertyDetails>

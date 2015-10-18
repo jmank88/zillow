@@ -18,7 +18,7 @@ type Zillow interface {
 	// Property Details
 	GetDeepComps(CompsRequest) (*DeepCompsResult, error)
 	GetDeepSearchResults(SearchRequest) (*DeepSearchResults, error)
-	//GetUpdatedPropertyDetails()
+	GetUpdatedPropertyDetails(request UpdatedPropertyDetailsRequest) (*UpdatedPropertyDetails, error)
 
 	// Neighborhood Data
 	//GetRegionChildren()
@@ -288,6 +288,72 @@ type RegionChartResult struct {
 	Zindex Value  `xml:"response>zindex"`
 }
 
+type UpdatedPropertyDetailsRequest struct {
+	Zpid string `xml:"zpid"`
+}
+
+type Posting struct {
+	Status          string `xml:"status"`
+	AgentName       string `xml:"agentName"`
+	AgentProfileUrl string `xml:"agentProfileUrl"`
+	Brokerage       string `xml:"brokerage"`
+	Type            string `xml:"type"`
+	LastUpdatedDate string `xml:"lastUpdatedDate"`
+	ExternalUrl     string `xml:"externalUrl"`
+	MLS             string `xml:"mls"`
+}
+
+type Images struct {
+	Count int      `xml:"count"`
+	Urls  []string `xml:"image>url"`
+}
+
+type EditedFacts struct {
+	UseCode        string  `xml:"useCode"`
+	Bedrooms       int     `xml:"bedrooms"`
+	Bathrooms      float64 `xml:"bathrooms"`
+	FinishedSqFt   int     `xml:"finishedSqFt"`
+	LotSizeSqFt    int     `xml:"lotSizeSqFt"`
+	YearBuilt      int     `xml:"yearBuilt"`
+	YearUpdated    int     `xml:"yearUpdated"`
+	NumFloors      int     `xml:"numFloors"`
+	Basement       string  `xml:"basement"`
+	Roof           string  `xml:"roof"`
+	View           string  `xml:"view"`
+	ParkingType    string  `xml:"parkingType"`
+	HeatingSources string  `xml:"heatingSources"`
+	HeatingSystem  string  `xml:"heatingSystem"`
+	Appliances     string  `xml:"appliances"`
+	FloorCovering  string  `xml:"floorCovering"`
+	Rooms          string  `xml:"rooms"`
+}
+
+type UpdatedPropertyDetails struct {
+	XMLName xml.Name `xml:"updatedPropertyDetails"`
+
+	Request UpdatedPropertyDetailsRequest `xml:"request"`
+	Message Message                       `xml:"message"`
+
+	PageViewCountMonth int `xml:"response>pageViewCount>currentMonth"`
+	PageViewCountTotal int `xml:"response>pageViewCount>total"`
+
+	Address Address `xml:"response>address"`
+
+	Posting          Posting `xml:"response>posting"`
+	Price            Value   `xml:"response>price"`
+	HomeDetailsLink  string  `xml:"response>links>homeDetails"`
+	PhotoGalleryLink string  `xml:"response>links>photoGallery"`
+	HomeInfoLink     string  `xml:"response>links>homeInfo"`
+
+	Images           Images      `xml:"response>images"`
+	EditedFacts      EditedFacts `xml:"response>editedFacts"`
+	HomeDescriptions string      `xml:"homeDesription"`
+	Neighborhood     string      `xml:"neighborhood"`
+	SchoolDistrict   string      `xml:"schoolDistrict"`
+	ElementarySchool string      `xml:"elementarySchool"`
+	MiddleSchool     string      `xml:"middleSchool"`
+}
+
 const baseUrl = "http://www.zillow.com/webservice/"
 
 const (
@@ -308,13 +374,14 @@ const (
 )
 
 const (
-	zestimatePath     = "Zestimate"
-	searchResultsPath = "SearchResults"
-	chartPath         = "Chart"
-	compsPath         = "Comps"
-	deepCompsPath     = "DeepComps"
-	deepSearchPath    = "DeepSearchResults"
-	regionChartPath   = "RegionChart"
+	zestimatePath              = "Zestimate"
+	searchResultsPath          = "SearchResults"
+	chartPath                  = "Chart"
+	compsPath                  = "Comps"
+	deepCompsPath              = "DeepComps"
+	deepSearchPath             = "DeepSearchResults"
+	updatedPropertyDetailsPath = "UpdatedPropertyDetails"
+	regionChartPath            = "RegionChart"
 	//TODO other services
 )
 
@@ -417,6 +484,19 @@ func (z *zillow) GetDeepSearchResults(request SearchRequest) (*DeepSearchResults
 	}
 	var result DeepSearchResults
 	if err := z.get(deepSearchPath, values, &result); err != nil {
+		return nil, err
+	} else {
+		return &result, nil
+	}
+}
+
+func (z *zillow) GetUpdatedPropertyDetails(request UpdatedPropertyDetailsRequest) (*UpdatedPropertyDetails, error) {
+	values := url.Values{
+		zwsIdParam: {z.zwsId},
+		zpidParam:  {request.Zpid},
+	}
+	var result UpdatedPropertyDetails
+	if err := z.get(updatedPropertyDetailsPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
