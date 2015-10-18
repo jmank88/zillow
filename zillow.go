@@ -22,7 +22,7 @@ type Zillow interface {
 
 	// Neighborhood Data
 	//GetRegionChildren()
-	//GetRegionChart()
+	GetRegionChart(RegionChartRequest) (*RegionChartResult, error)
 
 	// Mortgage Rates
 	//GetRateSummary()
@@ -267,6 +267,27 @@ type DeepSearchResults struct {
 	Results []DeepSearchResult `xml:"response>results>result"`
 }
 
+type RegionChartRequest struct {
+	City          string `xml:"city"`
+	State         string `xml:"state"`
+	Neighborhood  string `xml:"neighborhood"`
+	Zipcode       string `xml:"zip"`
+	UnitType      string `xml:"unit-type"`
+	Width         int    `xml:"width"`
+	Height        int    `xml:"height"`
+	ChartDuration string `xml:"chartDuration"`
+}
+
+type RegionChartResult struct {
+	XMLName xml.Name `xml:"regionchart"`
+
+	Request RegionChartRequest `xml:"request"`
+	Message Message            `xml:"message"`
+
+	Url    string `xml:"response>url"`
+	Zindex Value  `xml:"response>zindex"`
+}
+
 const baseUrl = "http://www.zillow.com/webservice/"
 
 const (
@@ -280,6 +301,10 @@ const (
 	heightParam        = "height"
 	chartDurationParam = "chartDuration"
 	countParam         = "count"
+	cityParam          = "city"
+	stateParam         = "state"
+	neighboorhoodParam = "neightborhood"
+	zipParam           = "zip"
 )
 
 const (
@@ -289,6 +314,7 @@ const (
 	compsPath         = "Comps"
 	deepCompsPath     = "DeepComps"
 	deepSearchPath    = "DeepSearchResults"
+	regionChartPath   = "RegionChart"
 	//TODO other services
 )
 
@@ -391,6 +417,26 @@ func (z *zillow) GetDeepSearchResults(request SearchRequest) (*DeepSearchResults
 	}
 	var result DeepSearchResults
 	if err := z.get(deepSearchPath, values, &result); err != nil {
+		return nil, err
+	} else {
+		return &result, nil
+	}
+}
+
+func (z *zillow) GetRegionChart(request RegionChartRequest) (*RegionChartResult, error) {
+	values := url.Values{
+		zwsIdParam:         {z.zwsId},
+		cityParam:          {request.City},
+		stateParam:         {request.State},
+		neighboorhoodParam: {request.Neighborhood},
+		zipParam:           {request.Zipcode},
+		unitTypeParam:      {request.UnitType},
+		widthParam:         {strconv.Itoa(request.Width)},
+		heightParam:        {strconv.Itoa(request.Height)},
+		chartDurationParam: {request.ChartDuration},
+	}
+	var result RegionChartResult
+	if err := z.get(regionChartPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil

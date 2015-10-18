@@ -24,6 +24,8 @@ const (
 	width        = 300
 	height       = 150
 	count        = 5
+	city         = "lacey"
+	state        = "WA"
 )
 
 func assertOnlyParam(t *testing.T, values url.Values, param, expected string) {
@@ -641,6 +643,44 @@ func TestGetDeepSearchResults(t *testing.T) {
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Fatalf("expected:\n %s\n\n but got:\n %s\n\n diff:\n %s\n",
+			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+	}
+}
+
+func TestGetRegionChart(t *testing.T) {
+	server, zillow := testFixtures(t, regionChartPath, func(values url.Values) {
+		assertOnlyParam(t, values, cityParam, city)
+		assertOnlyParam(t, values, stateParam, state)
+		assertOnlyParam(t, values, unitTypeParam, unitType)
+		assertOnlyParam(t, values, widthParam, strconv.Itoa(width))
+		assertOnlyParam(t, values, heightParam, strconv.Itoa(height))
+	})
+	defer server.Close()
+
+	request := RegionChartRequest{
+		City:     city,
+		State:    state,
+		UnitType: unitType,
+		Width:    width,
+		Height:   height,
+	}
+	result, err := zillow.GetRegionChart(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := &RegionChartResult{
+		XMLName: xml.Name{Space: "http://www.zillow.com/static/xsd/RegionChart.xsd", Local: "regionchart"},
+		Request: request,
+		Message: Message{
+			Text: "Request successfully processed",
+			Code: 0,
+		},
+		Url:    "http://localhost:8080/app?chartDuration=1year&chartType=partner&cityRegionId=5470&countyRegionId=0&height=150&nationRegionId=0&page=webservice%2FGetRegionChart&service=chart&showCity=true&showPercent=true&stateRegionId=0&width=300&zipRegionId=0",
+		Zindex: Value{Currency: "USD", Value: 463115},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
 			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
 	}
 }

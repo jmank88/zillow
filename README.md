@@ -18,7 +18,7 @@ This api is a work in progress.
 
 ### Neighborhood Data
 - TODO GetRegionChildren
-- TODO GetRegionChart
+- GetRegionChart
 
 ### Mortgage Rates
 - TODO GetRateSummary

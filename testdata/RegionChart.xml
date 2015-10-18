@@ -1,0 +1,17 @@
+<RegionChart:regionchart xsi:schemaLocation="http://www.zillow.com/static/xsd/RegionChart.xsd /vstatic/4ca2dd187d616abeef3653e6d53b0ff8/static/xsd/RegionChart.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:RegionChart="http://www.zillow.com/static/xsd/RegionChart.xsd">
+    <request>
+        <city>lacey</city>
+        <state>WA</state>
+        <unit-type>percent</unit-type>
+        <width>300</width>
+        <height>150</height>
+    </request>
+    <message>
+        <text>Request successfully processed</text>
+        <code>0</code>
+    </message>
+    <response>
+        <url>http://localhost:8080/app?chartDuration=1year&amp;chartType=partner&amp;cityRegionId=5470&amp;countyRegionId=0&amp;height=150&amp;nationRegionId=0&amp;page=webservice%2FGetRegionChart&amp;service=chart&amp;showCity=true&amp;showPercent=true&amp;stateRegionId=0&amp;width=300&amp;zipRegionId=0</url>
+        <zindex currency="USD">463115</zindex>
+    </response>
+</RegionChart:regionchart>
