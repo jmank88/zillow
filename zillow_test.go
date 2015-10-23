@@ -837,3 +837,38 @@ func TestGetRegionChart(t *testing.T) {
 			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
 	}
 }
+
+func TestGetRateSummary(t *testing.T) {
+	server, zillow := testFixtures(t, rateSummaryPath, func(values url.Values) {
+		assertOnlyParam(t, values, stateParam, state)
+	})
+	defer server.Close()
+
+	request := RateSummaryRequest{State: state}
+	result, err := zillow.GetRateSummary(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := &RateSummary{
+		XMLName: xml.Name{Space: "http://www.zillow.com/static/xsd/RateSummary.xsd", Local: "rateSummary"},
+		Message: Message{
+			Text: "Request successfully processed",
+			Code: 0,
+		},
+		Today: []Rate{
+			Rate{LoanType: "thirtyYearFixed", Count: 1252, Value: 5.91},
+			Rate{LoanType: "fifteenYearFixed", Count: 839, Value: 5.68},
+			Rate{LoanType: "fiveOneARM", Count: 685, Value: 5.49},
+		},
+		LastWeek: []Rate{
+			Rate{LoanType: "thirtyYearFixed", Count: 8933, Value: 6.02},
+			Rate{LoanType: "fifteenYearFixed", Count: 5801, Value: 5.94},
+			Rate{LoanType: "fiveOneARM", Count: 3148, Value: 5.71},
+		},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
+			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+	}
+}

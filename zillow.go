@@ -1,4 +1,5 @@
 // Package zillow implements a client for the Zillow api
+// http://www.zillow.com/howto/api/APIOverview.htm
 package zillow
 
 import (
@@ -25,7 +26,7 @@ type Zillow interface {
 	GetRegionChart(RegionChartRequest) (*RegionChartResult, error)
 
 	// Mortgage Rates
-	//GetRateSummary()
+	GetRateSummary(RateSummaryRequest) (*RateSummary, error)
 
 	// Mortgage Calculators
 	//GetMonthlyPayments()
@@ -387,6 +388,26 @@ type RegionChildren struct {
 	Regions       []Region `xml:"response>list>region"`
 }
 
+type RateSummaryRequest struct {
+	State string `xml:"state"`
+}
+
+type Rate struct {
+	LoanType string  `xml:"loanType,attr"`
+	Count    int     `xml:"count,attr"`
+	Value    float64 `xml:",chardata"`
+}
+
+type RateSummary struct {
+	XMLName xml.Name `xml:"rateSummary"`
+
+	Request RateSummaryRequest `xml:"request"`
+	Message Message            `xml:"message"`
+
+	Today    []Rate `xml:"response>today>rate"`
+	LastWeek []Rate `xml:"response>lastWeek>rate"`
+}
+
 const baseUrl = "http://www.zillow.com/webservice/"
 
 const (
@@ -419,6 +440,7 @@ const (
 	updatedPropertyDetailsPath = "UpdatedPropertyDetails"
 	regionChildrenPath         = "RegionChildren"
 	regionChartPath            = "RegionChart"
+	rateSummaryPath            = "RateSummary"
 	//TODO other services
 )
 
@@ -571,6 +593,19 @@ func (z *zillow) GetRegionChart(request RegionChartRequest) (*RegionChartResult,
 	}
 	var result RegionChartResult
 	if err := z.get(regionChartPath, values, &result); err != nil {
+		return nil, err
+	} else {
+		return &result, nil
+	}
+}
+
+func (z *zillow) GetRateSummary(request RateSummaryRequest) (*RateSummary, error) {
+	values := url.Values{
+		zwsIdParam: {z.zwsId},
+		stateParam: {request.State},
+	}
+	var result RateSummary
+	if err := z.get(rateSummaryPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil

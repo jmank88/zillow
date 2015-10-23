@@ -21,7 +21,8 @@ This api is a work in progress.
 - GetRegionChart
 
 ### Mortgage Rates
-- TODO GetRateSummary
+- GetRateSummary
+-- TODO JSON support
 
 ### Mortgage Calculators
 - TODO GetMonthlyPayments
