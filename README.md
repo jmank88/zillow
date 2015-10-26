@@ -2,8 +2,6 @@
 GoLang Zillow Api Client
 http://www.zillow.com/howto/api/APIOverview.htm
 
-This api is a work in progress.
-
 ## Services
 ### Home Valuation
 - GetZestimate
@@ -22,10 +20,8 @@ This api is a work in progress.
 
 ### Mortgage Rates
 - GetRateSummary
-    - TODO JSON support
 
 ### Mortgage Calculators
 - GetMonthlyPayments
-    - TODO JSON support
 - CalculateMonthlyPaymentsAdvanced
 - CalculateAffordability
