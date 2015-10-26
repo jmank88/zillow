@@ -25,6 +25,6 @@ This api is a work in progress.
 -- TODO JSON support
 
 ### Mortgage Calculators
-- TODO GetMonthlyPayments
+- GetMonthlyPayments
 - TODO CalculateMonthlyPaymentsAdvanced
 - TODO CalculateAffordability

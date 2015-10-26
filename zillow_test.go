@@ -29,6 +29,9 @@ const (
 	regionCity   = "seattle"
 	regionState  = "wa"
 	childType    = "neighborhood"
+	price = 300000
+	down = 15
+	zip = "98104"
 )
 
 func assertOnlyParam(t *testing.T, values url.Values, param, expected string) {
@@ -865,6 +868,57 @@ func TestGetRateSummary(t *testing.T) {
 			Rate{LoanType: "fifteenYearFixed", Count: 5801, Value: 5.94},
 			Rate{LoanType: "fiveOneARM", Count: 3148, Value: 5.71},
 		},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
+			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+	}
+}
+
+func TestGetMonthlyPayments(t *testing.T) {
+	server, zillow := testFixtures(t, monthlyPaymentsPath, func(values url.Values) {
+		assertOnlyParam(t, values, priceParam, strconv.Itoa(price))
+		assertOnlyParam(t, values, downParam, strconv.Itoa(down))
+		assertOnlyParam(t, values, zipParam, zip)
+	})
+	defer server.Close()
+
+	request := MonthlyPaymentsRequest{Price: price, Down: down, Zip: zip}
+	result, err := zillow.GetMonthlyPayments(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := &MonthlyPayments{
+		XMLName: xml.Name{Space: "http://www.zillow.com/static/xsd/MonthlyPayments.xsd", Local: "paymentsSummary"},
+		Request: request,
+		Message: Message{
+			Text: "Request successfully processed",
+			Code: 0,
+		},
+		Payments: []Payment{
+			{
+				LoanType: "thirtyYearFixed",
+				Rate: 5.9,
+				MonthlyPrincipalAndInterest: 1512,
+				MonthlyMortgageInsurance: 68,
+			},
+			{
+				LoanType: "fifteenYearFixed",
+				Rate: 5.68,
+				MonthlyPrincipalAndInterest: 1477,
+				MonthlyMortgageInsurance: 68,
+			},
+			{
+				LoanType: "fiveOneARM",
+				Rate: 5.71,
+				MonthlyPrincipalAndInterest: 1482,
+				MonthlyMortgageInsurance: 74,
+			},
+		},
+		DownPayment: 45000,
+		MonthlyPropertyTaxes: 193,
+		MonthlyHazardInsurance: 49,
 	}
 
 	if !reflect.DeepEqual(result, expected) {

@@ -29,7 +29,7 @@ type Zillow interface {
 	GetRateSummary(RateSummaryRequest) (*RateSummary, error)
 
 	// Mortgage Calculators
-	//GetMonthlyPayments()
+	GetMonthlyPayments(MonthlyPaymentsRequest) (*MonthlyPayments, error)
 	//CalculateMonthlyPaymentsAdvanced()
 	//CalculateAffordability()
 }
@@ -408,6 +408,33 @@ type RateSummary struct {
 	LastWeek []Rate `xml:"response>lastWeek>rate"`
 }
 
+type MonthlyPaymentsRequest struct {
+	Price int `xml:"price"`
+	Down int `xml:"down"`
+	DollarsDown int `xml:"dollarsdown"`
+	Zip string `xml:"zip"`
+}
+
+type Payment struct {
+	LoanType string `xml:"loanType,attr"`
+	Rate float64 `xml:"rate"`
+	MonthlyPrincipalAndInterest int `xml:"monthlyPrincipalAndInterest"`
+	MonthlyMortgageInsurance int `xml:"monthlyMortgageInsurance"`
+}
+
+type MonthlyPayments struct {
+	XMLName xml.Name `xml:"paymentsSummary"`
+
+	Request MonthlyPaymentsRequest `xml:"request"`
+	Message Message            `xml:"message"`
+
+	Payments []Payment `xml:"response>payment"`
+	DownPayment int `xml:"response>downPayment"`
+	MonthlyPropertyTaxes int `xml:"response>monthlyPropertyTaxes"`
+	MonthlyHazardInsurance int `xml:"response>monthlyHazardInsurance"`
+
+}
+
 const baseUrl = "http://www.zillow.com/webservice/"
 
 const (
@@ -428,6 +455,9 @@ const (
 	countryParam       = "country"
 	childTypeParam     = "childtype"
 	regionIdParam      = "regionId"
+	priceParam = "price"
+	downParam = "down"
+	dollarsDownParam = "dollarsdown"
 )
 
 const (
@@ -441,6 +471,7 @@ const (
 	regionChildrenPath         = "RegionChildren"
 	regionChartPath            = "RegionChart"
 	rateSummaryPath            = "RateSummary"
+	monthlyPaymentsPath            = "MonthlyPayments"
 	//TODO other services
 )
 
@@ -606,6 +637,22 @@ func (z *zillow) GetRateSummary(request RateSummaryRequest) (*RateSummary, error
 	}
 	var result RateSummary
 	if err := z.get(rateSummaryPath, values, &result); err != nil {
+		return nil, err
+	} else {
+		return &result, nil
+	}
+}
+
+func (z *zillow) GetMonthlyPayments(request MonthlyPaymentsRequest) (*MonthlyPayments, error) {
+	values := url.Values{
+		zwsIdParam: {z.zwsId},
+		priceParam: {strconv.Itoa(request.Price)},
+		downParam: {strconv.Itoa(request.Down)},
+		dollarsDownParam: {strconv.Itoa(request.DollarsDown)},
+		zipParam: {request.Zip},
+	}
+	var result MonthlyPayments
+	if err := z.get(monthlyPaymentsPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
