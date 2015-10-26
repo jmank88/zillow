@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MonthlyPaymentsAdvanced:paymentsdetails xsi:schemaLocation="http://www.zillow.com/static/xsd/MonthlyPaymentsAdvanced.xsd http://www.zillow.com/vstatic/254f791ffb969e3098e3544e029df057/static/xsd/MonthlyPaymentsAdvanced.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:MonthlyPaymentsAdvanced="http://www.zillow.com/static/xsd/MonthlyPaymentsAdvanced.xsd">
+    <request>
+        <price>300000</price>
+        <rate>6.0</rate>
+        <schedule>yearly</schedule>
+        <terminmonths>360</terminmonths>
+        <propertytax>2000</propertytax>
+        <hazard>1000</hazard>
+        <pmi>150</pmi>
+        <hoa>3200</hoa>
+        <zip>98104</zip>
+        <output>xml</output>
+    </request>
+    <message>
+        <text>Request successfully processed</text>
+        <code>0</code>
+    </message>
+    <response>
+        <monthlyprincipalandinterest>1439</monthlyprincipalandinterest>
+        <monthlypropertytaxes>166</monthlypropertytaxes>
+        <monthlyhazardinsurance>83</monthlyhazardinsurance>
+        <monthlypmi>150</monthlypmi>
+        <monthlyhoadues>3200</monthlyhoadues>
+        <totalmonthlypayment>5038</totalmonthlypayment>
+        <totalpayments>1813652</totalpayments>
+        <totalinterest>278012</totalinterest>
+        <totalprincipal>240000</totalprincipal>
+        <totaltaxesfeesandinsurance>1295640</totaltaxesfeesandinsurance>
+        <amortizationschedule frequency="annual">
+            <payment>
+                <beginningbalance>240000</beginningbalance>
+                <amount>17267</amount>
+                <principal>2947</principal>
+                <interest>14320</interest>
+                <endingbalance>237053</endingbalance>
+            </payment>
+            <payment>
+                <beginningbalance>237053</beginningbalance>
+                <amount>17267</amount>
+                <principal>3129</principal>
+                <interest>14138</interest>
+                <endingbalance>233924</endingbalance>
+            </payment>
+            <payment>
+                <beginningbalance>233924</beginningbalance>
+                <amount>17267</amount>
+                <principal>3322</principal>
+                <interest>13945</interest>
+                <endingbalance>230602</endingbalance>
+            </payment>
+        </amortizationschedule>
+    </response>
+</MonthlyPaymentsAdvanced:paymentsdetails>

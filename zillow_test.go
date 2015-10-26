@@ -32,6 +32,13 @@ const (
 	price = 300000
 	down = 15
 	zip = "98104"
+	rate = float32(6.0)
+	schedule = "yearly"
+	termInMonths = 360
+	propertyTax = 2000
+	hazard = 1000
+	pmi = 150
+	hoa = 3200
 )
 
 func assertOnlyParam(t *testing.T, values url.Values, param, expected string) {
@@ -919,6 +926,85 @@ func TestGetMonthlyPayments(t *testing.T) {
 		DownPayment: 45000,
 		MonthlyPropertyTaxes: 193,
 		MonthlyHazardInsurance: 49,
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
+			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+	}
+}
+
+func TestCalculateMonthlyPaymentsAdvanced(t *testing.T) {
+	server, zillow := testFixtures(t, monthlyPaymentsAdvancedPath, func(values url.Values) {
+		assertOnlyParam(t, values, priceParam, strconv.Itoa(price))
+		assertOnlyParam(t, values, rateParam, strconv.FormatFloat(float64(rate), 'f', -1, 32))
+		assertOnlyParam(t, values, scheduleParam, schedule)
+		assertOnlyParam(t, values, termInMonthsParam, strconv.Itoa(termInMonths))
+		assertOnlyParam(t, values, propertyTaxParam, strconv.Itoa(propertyTax))
+		assertOnlyParam(t, values, hazardParam, strconv.Itoa(hazard))
+		assertOnlyParam(t, values, pmiParam, strconv.Itoa(pmi))
+		assertOnlyParam(t, values, hoaParam, strconv.Itoa(hoa))
+		assertOnlyParam(t, values, zipParam, zip)
+	})
+	defer server.Close()
+
+	request := MonthlyPaymentsAdvancedRequest{
+		Price: price,
+		Rate: rate,
+		Schedule: schedule,
+		TermInMonths: termInMonths,
+		PropertyTax: propertyTax,
+		Hazard: hazard,
+		PMI: pmi,
+		HOA: hoa,
+		Zip: zip}
+	result, err := zillow.CalculateMonthlyPaymentsAdvanced(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := &MonthlyPaymentsAdvanced{
+		XMLName: xml.Name{Space: "http://www.zillow.com/static/xsd/MonthlyPaymentsAdvanced.xsd", Local: "paymentsdetails"},
+		Request: request,
+		Message: Message{
+			Text: "Request successfully processed",
+			Code: 0,
+		},
+		MonthlyPrincipalAndInterest: 1439,
+		MonthlyPropertyTaxes: 166,
+		MonthlyHazardInsurance: 83,
+		MonthlyPMI: 150,
+		MonthlyHOADues: 3200,
+		TotalMonthlyPayment: 5038,
+		TotalPayments: 1813652,
+		TotalInterest: 278012,
+		TotalPrincipal: 240000,
+		TotalTaxesFeesAndInsurance: 1295640,
+		AmortizationSchedule: AmortizationSchedule{
+			Frequency: "annual",
+			Payments: []AdvancedPayment{
+				{
+					BeginningBalance: 240000,
+					Amount: 17267,
+					Principal: 2947,
+					Interest: 14320,
+					EndingBalance: 237053,
+				},
+				{
+					BeginningBalance: 237053,
+					Amount: 17267,
+					Principal: 3129,
+					Interest: 14138,
+					EndingBalance: 233924,
+				},
+				{
+					BeginningBalance: 233924,
+					Amount: 17267,
+					Principal: 3322,
+					Interest: 13945,
+					EndingBalance: 230602,
+				},
+			},
+		},
 	}
 
 	if !reflect.DeepEqual(result, expected) {

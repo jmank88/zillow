@@ -22,9 +22,10 @@ This api is a work in progress.
 
 ### Mortgage Rates
 - GetRateSummary
--- TODO JSON support
+    - TODO JSON support
 
 ### Mortgage Calculators
 - GetMonthlyPayments
-- TODO CalculateMonthlyPaymentsAdvanced
+    - TODO JSON support
+- CalculateMonthlyPaymentsAdvanced
 - TODO CalculateAffordability
