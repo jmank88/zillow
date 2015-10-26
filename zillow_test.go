@@ -17,28 +17,34 @@ import (
 const (
 	testZwsId = "test-id"
 
-	zpid         = "48749425"
-	address      = "2114 Bigelow Ave"
-	citystatezip = "Seattle, WA"
-	unitType     = "percent"
-	width        = 300
-	height       = 150
-	count        = 5
-	city         = "lacey"
-	state        = "WA"
-	regionCity   = "seattle"
-	regionState  = "wa"
-	childType    = "neighborhood"
-	price = 300000
-	down = 15
-	zip = "98104"
-	rate = float32(6.0)
-	schedule = "yearly"
-	termInMonths = 360
-	propertyTax = 2000
-	hazard = 1000
-	pmi = 150
-	hoa = 3200
+	zpid           = "48749425"
+	address        = "2114 Bigelow Ave"
+	citystatezip   = "Seattle, WA"
+	unitType       = "percent"
+	width          = 300
+	height         = 150
+	count          = 5
+	city           = "lacey"
+	state          = "WA"
+	regionCity     = "seattle"
+	regionState    = "wa"
+	childType      = "neighborhood"
+	price          = 300000
+	down           = 15
+	zip            = "98104"
+	rate           = float32(6.0)
+	schedule       = "yearly"
+	termInMonths   = 360
+	propertyTax    = 2000
+	hazard         = 1000
+	pmi            = 150
+	hoa            = 3200
+	annualIncome   = 1000000
+	monthlyPayment = 2000
+	monthlyDebts   = 1500
+	debtToIncome   = 36.0
+	incomeTax      = 30.0
+	estimate       = false
 )
 
 func assertOnlyParam(t *testing.T, values url.Values, param, expected string) {
@@ -906,25 +912,25 @@ func TestGetMonthlyPayments(t *testing.T) {
 		Payments: []Payment{
 			{
 				LoanType: "thirtyYearFixed",
-				Rate: 5.9,
+				Rate:     5.9,
 				MonthlyPrincipalAndInterest: 1512,
-				MonthlyMortgageInsurance: 68,
+				MonthlyMortgageInsurance:    68,
 			},
 			{
 				LoanType: "fifteenYearFixed",
-				Rate: 5.68,
+				Rate:     5.68,
 				MonthlyPrincipalAndInterest: 1477,
-				MonthlyMortgageInsurance: 68,
+				MonthlyMortgageInsurance:    68,
 			},
 			{
 				LoanType: "fiveOneARM",
-				Rate: 5.71,
+				Rate:     5.71,
 				MonthlyPrincipalAndInterest: 1482,
-				MonthlyMortgageInsurance: 74,
+				MonthlyMortgageInsurance:    74,
 			},
 		},
-		DownPayment: 45000,
-		MonthlyPropertyTaxes: 193,
+		DownPayment:            45000,
+		MonthlyPropertyTaxes:   193,
 		MonthlyHazardInsurance: 49,
 	}
 
@@ -949,15 +955,16 @@ func TestCalculateMonthlyPaymentsAdvanced(t *testing.T) {
 	defer server.Close()
 
 	request := MonthlyPaymentsAdvancedRequest{
-		Price: price,
-		Rate: rate,
-		Schedule: schedule,
+		Price:        price,
+		Rate:         rate,
+		Schedule:     schedule,
 		TermInMonths: termInMonths,
-		PropertyTax: propertyTax,
-		Hazard: hazard,
-		PMI: pmi,
-		HOA: hoa,
-		Zip: zip}
+		PropertyTax:  propertyTax,
+		Hazard:       hazard,
+		PMI:          pmi,
+		HOA:          hoa,
+		Zip:          zip,
+	}
 	result, err := zillow.CalculateMonthlyPaymentsAdvanced(request)
 	if err != nil {
 		t.Fatal(err)
@@ -970,38 +977,146 @@ func TestCalculateMonthlyPaymentsAdvanced(t *testing.T) {
 			Code: 0,
 		},
 		MonthlyPrincipalAndInterest: 1439,
-		MonthlyPropertyTaxes: 166,
-		MonthlyHazardInsurance: 83,
-		MonthlyPMI: 150,
-		MonthlyHOADues: 3200,
-		TotalMonthlyPayment: 5038,
-		TotalPayments: 1813652,
-		TotalInterest: 278012,
-		TotalPrincipal: 240000,
-		TotalTaxesFeesAndInsurance: 1295640,
+		MonthlyPropertyTaxes:        166,
+		MonthlyHazardInsurance:      83,
+		MonthlyPMI:                  150,
+		MonthlyHOADues:              3200,
+		TotalMonthlyPayment:         5038,
+		TotalPayments:               1813652,
+		TotalInterest:               278012,
+		TotalPrincipal:              240000,
+		TotalTaxesFeesAndInsurance:  1295640,
 		AmortizationSchedule: AmortizationSchedule{
 			Frequency: "annual",
 			Payments: []AdvancedPayment{
 				{
 					BeginningBalance: 240000,
-					Amount: 17267,
-					Principal: 2947,
-					Interest: 14320,
-					EndingBalance: 237053,
+					Amount:           17267,
+					Principal:        2947,
+					Interest:         14320,
+					EndingBalance:    237053,
 				},
 				{
 					BeginningBalance: 237053,
-					Amount: 17267,
-					Principal: 3129,
-					Interest: 14138,
-					EndingBalance: 233924,
+					Amount:           17267,
+					Principal:        3129,
+					Interest:         14138,
+					EndingBalance:    233924,
 				},
 				{
 					BeginningBalance: 233924,
-					Amount: 17267,
-					Principal: 3322,
-					Interest: 13945,
-					EndingBalance: 230602,
+					Amount:           17267,
+					Principal:        3322,
+					Interest:         13945,
+					EndingBalance:    230602,
+				},
+			},
+		},
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
+			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+	}
+}
+
+func TestCalculateAffordability(t *testing.T) {
+	down := 800000
+	rate := float32(6.504)
+	schedule := "yearly"
+	propertyTax := float32(20.0)
+	hazard := 20000
+	pmi := 1000
+	hoa := 10000
+	zip := "91302"
+	server, zillow := testFixtures(t, affordabilityPath, func(values url.Values) {
+		assertOnlyParam(t, values, annualIncomeParam, strconv.Itoa(annualIncome))
+		assertOnlyParam(t, values, monthlyPaymentParam, strconv.Itoa(monthlyPayment))
+		assertOnlyParam(t, values, downParam, strconv.Itoa(down))
+		assertOnlyParam(t, values, monthlyDebtsParam, strconv.Itoa(monthlyDebts))
+		assertOnlyParam(t, values, rateParam, strconv.FormatFloat(float64(rate), 'f', -1, 32))
+		assertOnlyParam(t, values, scheduleParam, schedule)
+		assertOnlyParam(t, values, termInMonthsParam, strconv.Itoa(termInMonths))
+		assertOnlyParam(t, values, debtToIncomeParam, strconv.FormatFloat(float64(debtToIncome), 'f', -1, 32))
+		assertOnlyParam(t, values, incomeTaxParam, strconv.FormatFloat(float64(incomeTax), 'f', -1, 32))
+		assertOnlyParam(t, values, estimateParam, strconv.FormatBool(estimate))
+		assertOnlyParam(t, values, propertyTaxParam, strconv.FormatFloat(float64(propertyTax), 'f', -1, 32))
+		assertOnlyParam(t, values, hazardParam, strconv.Itoa(hazard))
+		assertOnlyParam(t, values, pmiParam, strconv.Itoa(pmi))
+		assertOnlyParam(t, values, hoaParam, strconv.Itoa(hoa))
+		assertOnlyParam(t, values, zipParam, zip)
+	})
+	defer server.Close()
+
+	request := AffordabilityRequest{
+		AnnualIncome:   annualIncome,
+		MonthlyPayment: monthlyPayment,
+		Down:           down,
+		MonthlyDebts:   monthlyDebts,
+		Rate:           rate,
+		Schedule:       schedule,
+		TermInMonths:   termInMonths,
+		DebtToIncome:   debtToIncome,
+		IncomeTax:      incomeTax,
+		Estimate:       estimate,
+		PropertyTax:    propertyTax,
+		Hazard:         hazard,
+		PMI:            pmi,
+		HOA:            hoa,
+		Zip:            zip,
+	}
+	result, err := zillow.CalculateAffordability(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := &Affordability{
+		XMLName: xml.Name{Space: "static/xsd/CalculateAffordability.xsd", Local: "affordabilitydetails"},
+		Request: request,
+		Message: Message{
+			Text: "Request successfully processed",
+			Code: 0,
+		},
+		AffordabilityAmount:         952269,
+		MonthlyPrincipalAndInterest: 963,
+		MonthlyPropertyTaxes:        15871,
+		MonthlyHazardInsurance:      1666,
+		MonthlyPMI:                  0,
+		MonthlyHOADues:              10000,
+		TotalMonthlyPayment:         28500,
+		TotalPayments:               10260000,
+		TotalInterestPayments:       194355,
+		TotalPrincipal:              152269,
+		TotalTaxesFeesAndInsurance:  9913375,
+		MonthlyIncome:               83333,
+		MonthlyDebts:                1500,
+		MonthlyIncomeTax:            25000,
+		MonthlyRemainingBudget:      28333,
+		AmortizationSchedule: AffordabilityAmortizationSchedule{
+			Type: "annual",
+			Payments: []AffordabilityPayment{
+				{
+					Period:           1,
+					BeginningBalance: 152269,
+					Payment:          11554,
+					Principal:        1701,
+					Interest:         9853,
+					EndingBalance:    150569,
+				},
+				{
+					Period:           2,
+					BeginningBalance: 150569,
+					Payment:          11554,
+					Principal:        1815,
+					Interest:         9740,
+					EndingBalance:    148754,
+				},
+				{
+					Period:           3,
+					BeginningBalance: 148754,
+					Payment:          11554,
+					Principal:        1936,
+					Interest:         9618,
+					EndingBalance:    146818,
 				},
 			},
 		},

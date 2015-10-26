@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CalculateAffordability:affordabilitydetails xsi:schemaLocation="static/xsd/CalculateAffordability.xsd http://www.zillow.com/vstatic/254f791ffb969e3098e3544e029df057/static/xsd/AffordabilityCalc.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:CalculateAffordability="static/xsd/CalculateAffordability.xsd">
+    <request>
+        <annualincome>1000000</annualincome>
+        <monthlypayment>2000</monthlypayment>
+        <down>800000</down>
+        <monthlydebts>1500</monthlydebts>
+        <rate>6.504</rate>
+        <schedule>yearly</schedule>
+        <terminmonths>360</terminmonths>
+        <debttoincome>36.0</debttoincome>
+        <incometax>30.0</incometax>
+        <estimate>false</estimate>
+        <propertytax>20.0</propertytax>
+        <hazard>20000</hazard>
+        <pmi>1000</pmi>
+        <hoa>10000</hoa>
+        <zip>91302</zip>
+    </request>
+    <message>
+        <text>Request successfully processed</text>
+        <code>0</code>
+    </message>
+    <response>
+        <affordabilityamount>952269</affordabilityamount>
+        <monthlyprincipalandinterest>963</monthlyprincipalandinterest>
+        <monthlypropertytaxes>15871</monthlypropertytaxes>
+        <monthlyhazardinsurance>1666</monthlyhazardinsurance>
+        <monthlypmi>0</monthlypmi>
+        <monthlyhoadues>10000</monthlyhoadues>
+        <totalmonthlypayment>28500</totalmonthlypayment>
+        <totalpayments>10260000</totalpayments>
+        <totalinterestpayments>194355</totalinterestpayments>
+        <totalprincipal>152269</totalprincipal>
+        <totaltaxesfeesandinsurance>9913375</totaltaxesfeesandinsurance>
+        <monthlyincome>83333</monthlyincome>
+        <monthlydebts>1500</monthlydebts>
+        <monthlyincometax>25000</monthlyincometax>
+        <monthlyremainingbudget>28333</monthlyremainingbudget>
+        <amortizationschedule type="annual">
+            <payment>
+                <period>1</period>
+                <beginningbalance>152269</beginningbalance>
+                <payment>11554</payment>
+                <principal>1701</principal>
+                <interest>9853</interest>
+                <endingbalance>150569</endingbalance>
+            </payment>
+            <payment>
+                <period>2</period>
+                <beginningbalance>150569</beginningbalance>
+                <payment>11554</payment>
+                <principal>1815</principal>
+                <interest>9740</interest>
+                <endingbalance>148754</endingbalance>
+            </payment>
+            <payment>
+                <period>3</period>
+                <beginningbalance>148754</beginningbalance>
+                <payment>11554</payment>
+                <principal>1936</principal>
+                <interest>9618</interest>
+                <endingbalance>146818</endingbalance>
+            </payment>
+        </amortizationschedule>
+    </response>
+</CalculateAffordability:affordabilitydetails>

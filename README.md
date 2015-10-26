@@ -28,4 +28,4 @@ This api is a work in progress.
 - GetMonthlyPayments
     - TODO JSON support
 - CalculateMonthlyPaymentsAdvanced
-- TODO CalculateAffordability
+- CalculateAffordability

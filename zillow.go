@@ -31,7 +31,7 @@ type Zillow interface {
 	// Mortgage Calculators
 	GetMonthlyPayments(MonthlyPaymentsRequest) (*MonthlyPayments, error)
 	CalculateMonthlyPaymentsAdvanced(MonthlyPaymentsAdvancedRequest) (*MonthlyPaymentsAdvanced, error)
-	//CalculateAffordability()
+	CalculateAffordability(AffordabilityRequest) (*Affordability, error)
 }
 
 // Creates a new zillow client.
@@ -409,125 +409,186 @@ type RateSummary struct {
 }
 
 type MonthlyPaymentsRequest struct {
-	Price int `xml:"price"`
-	Down int `xml:"down"`
-	DollarsDown int `xml:"dollarsdown"`
-	Zip string `xml:"zip"`
+	Price       int    `xml:"price"`
+	Down        int    `xml:"down"`
+	DollarsDown int    `xml:"dollarsdown"`
+	Zip         string `xml:"zip"`
 }
 
 type Payment struct {
-	LoanType string `xml:"loanType,attr"`
-	Rate float64 `xml:"rate"`
-	MonthlyPrincipalAndInterest int `xml:"monthlyPrincipalAndInterest"`
-	MonthlyMortgageInsurance int `xml:"monthlyMortgageInsurance"`
+	LoanType                    string  `xml:"loanType,attr"`
+	Rate                        float64 `xml:"rate"`
+	MonthlyPrincipalAndInterest int     `xml:"monthlyPrincipalAndInterest"`
+	MonthlyMortgageInsurance    int     `xml:"monthlyMortgageInsurance"`
 }
 
 type MonthlyPayments struct {
 	XMLName xml.Name `xml:"paymentsSummary"`
 
 	Request MonthlyPaymentsRequest `xml:"request"`
-	Message Message            `xml:"message"`
+	Message Message                `xml:"message"`
 
-	Payments []Payment `xml:"response>payment"`
-	DownPayment int `xml:"response>downPayment"`
-	MonthlyPropertyTaxes int `xml:"response>monthlyPropertyTaxes"`
-	MonthlyHazardInsurance int `xml:"response>monthlyHazardInsurance"`
+	Payments               []Payment `xml:"response>payment"`
+	DownPayment            int       `xml:"response>downPayment"`
+	MonthlyPropertyTaxes   int       `xml:"response>monthlyPropertyTaxes"`
+	MonthlyHazardInsurance int       `xml:"response>monthlyHazardInsurance"`
 }
 
 type MonthlyPaymentsAdvancedRequest struct {
-	Price int `xml:"price"`
-	Down int `xml:"down"`
-	Amount int `xml:"amount"`
-	Rate float32 `xml:"rate"`
-	Schedule string `xml:"schedule"`
-	TermInMonths int `xml:"terminmonths"`
-	PropertyTax int `xml:"propertytax"`
-	Hazard int `xml:"hazard"`
-	PMI int `xml:"pmi"`
-	HOA int `xml:"hoa"`
-	Zip string `xml:"zip"`
+	Price        int     `xml:"price"`
+	Down         int     `xml:"down"`
+	Amount       int     `xml:"amount"`
+	Rate         float32 `xml:"rate"`
+	Schedule     string  `xml:"schedule"`
+	TermInMonths int     `xml:"terminmonths"`
+	PropertyTax  int     `xml:"propertytax"`
+	Hazard       int     `xml:"hazard"`
+	PMI          int     `xml:"pmi"`
+	HOA          int     `xml:"hoa"`
+	Zip          string  `xml:"zip"`
 }
 
 type AdvancedPayment struct {
 	BeginningBalance int `xml:"beginningbalance"`
-	Amount int `xml:"amount"`
-	Principal int `xml:"principal"`
-	Interest int `xml:"interest"`
-	EndingBalance int `xml:"endingbalance"`
+	Amount           int `xml:"amount"`
+	Principal        int `xml:"principal"`
+	Interest         int `xml:"interest"`
+	EndingBalance    int `xml:"endingbalance"`
 }
 
 type AmortizationSchedule struct {
-	Frequency string `xml:"frequency,attr"`
-	Payments []AdvancedPayment `xml:"payment"`
+	Frequency string            `xml:"frequency,attr"`
+	Payments  []AdvancedPayment `xml:"payment"`
 }
 
 type MonthlyPaymentsAdvanced struct {
 	XMLName xml.Name `xml:"paymentsdetails"`
 
 	Request MonthlyPaymentsAdvancedRequest `xml:"request"`
-	Message Message            `xml:"message"`
+	Message Message                        `xml:"message"`
 
-	MonthlyPrincipalAndInterest int `xml:"response>monthlyprincipalandinterest"`
-	MonthlyPropertyTaxes int `xml:"response>monthlypropertytaxes"`
-	MonthlyHazardInsurance int `xml:"response>monthlyhazardinsurance"`
-	MonthlyPMI int `xml:"response>monthlypmi"`
-	MonthlyHOADues int `xml:"response>monthlyhoadues"`
-	TotalMonthlyPayment int `xml:"response>totalmonthlypayment"`
-	TotalPayments int `xml:"response>totalpayments"`
-	TotalInterest int `xml:"response>totalinterest"`
-	TotalPrincipal int `xml:"response>totalprincipal"`
-	TotalTaxesFeesAndInsurance int `xml:"response>totaltaxesfeesandinsurance"`
-	AmortizationSchedule AmortizationSchedule `xml:"response>amortizationschedule"`
+	MonthlyPrincipalAndInterest int                  `xml:"response>monthlyprincipalandinterest"`
+	MonthlyPropertyTaxes        int                  `xml:"response>monthlypropertytaxes"`
+	MonthlyHazardInsurance      int                  `xml:"response>monthlyhazardinsurance"`
+	MonthlyPMI                  int                  `xml:"response>monthlypmi"`
+	MonthlyHOADues              int                  `xml:"response>monthlyhoadues"`
+	TotalMonthlyPayment         int                  `xml:"response>totalmonthlypayment"`
+	TotalPayments               int                  `xml:"response>totalpayments"`
+	TotalInterest               int                  `xml:"response>totalinterest"`
+	TotalPrincipal              int                  `xml:"response>totalprincipal"`
+	TotalTaxesFeesAndInsurance  int                  `xml:"response>totaltaxesfeesandinsurance"`
+	AmortizationSchedule        AmortizationSchedule `xml:"response>amortizationschedule"`
 }
 
+type AffordabilityRequest struct {
+	AnnualIncome   int     `xml:"annualincome"`
+	MonthlyPayment int     `xml:"monthlypayment"`
+	Down           int     `xml:"down"`
+	MonthlyDebts   int     `xml:"monthlydebts"`
+	Rate           float32 `xml:"rate"`
+	Schedule       string  `xml:"schedule"`
+	TermInMonths   int     `xml:"terminmonths"`
+	DebtToIncome   float32 `xml:"debttoincome"`
+	IncomeTax      float32 `xml:"incometax"`
+	Estimate       bool    `xml:"estimate"`
+	PropertyTax    float32 `xml:"propertytax"`
+	Hazard         int     `xml:"hazard"`
+	PMI            int     `xml:"pmi"`
+	HOA            int     `xml:"hoa"`
+	Zip            string  `xml:"zip"`
+}
+
+type AffordabilityPayment struct {
+	Period           int `xml:"period"`
+	BeginningBalance int `xml:"beginningbalance"`
+	Payment          int `xml:"payment"`
+	Principal        int `xml:"principal"`
+	Interest         int `xml:"interest"`
+	EndingBalance    int `xml:"endingbalance"`
+}
+
+type AffordabilityAmortizationSchedule struct {
+	Type     string                 `xml:"type,attr"`
+	Payments []AffordabilityPayment `xml:"payment"`
+}
+
+type Affordability struct {
+	XMLName xml.Name `xml:"affordabilitydetails"`
+
+	Request AffordabilityRequest `xml:"request"`
+	Message Message              `xml:"message"`
+
+	AffordabilityAmount         int                               `xml:"response>affordabilityamount"`
+	MonthlyPrincipalAndInterest int                               `xml:"response>monthlyprincipalandinterest"`
+	MonthlyPropertyTaxes        int                               `xml:"response>monthlypropertytaxes"`
+	MonthlyHazardInsurance      int                               `xml:"response>monthlyhazardinsurance"`
+	MonthlyPMI                  int                               `xml:"response>monthlypmi"`
+	MonthlyHOADues              int                               `xml:"response>monthlyhoadues"`
+	TotalMonthlyPayment         int                               `xml:"response>totalmonthlypayment"`
+	TotalPayments               int                               `xml:"response>totalpayments"`
+	TotalInterestPayments       int                               `xml:"response>totalinterestpayments"`
+	TotalPrincipal              int                               `xml:"response>totalprincipal"`
+	TotalTaxesFeesAndInsurance  int                               `xml:"response>totaltaxesfeesandinsurance"`
+	MonthlyIncome               int                               `xml:"response>monthlyincome"`
+	MonthlyDebts                int                               `xml:"response>monthlydebts"`
+	MonthlyIncomeTax            int                               `xml:"response>monthlyincometax"`
+	MonthlyRemainingBudget      int                               `xml:"response>monthlyremainingbudget"`
+	AmortizationSchedule        AffordabilityAmortizationSchedule `xml:"response>amortizationschedule"`
+}
 
 const baseUrl = "http://www.zillow.com/webservice/"
 
 const (
-	zwsIdParam         = "zws-Id"
-	zpidParam          = "zpid"
-	rentzestimateParam = "rentzestimate"
-	addressParam       = "address"
-	cityStateZipParam  = "citystatezip"
-	unitTypeParam      = "unit-type"
-	widthParam         = "width"
-	heightParam        = "height"
-	chartDurationParam = "chartDuration"
-	countParam         = "count"
-	cityParam          = "city"
-	stateParam         = "state"
-	neighboorhoodParam = "neightborhood"
-	zipParam           = "zip"
-	countryParam       = "country"
-	childTypeParam     = "childtype"
-	regionIdParam      = "regionId"
-	priceParam = "price"
-	downParam = "down"
-	dollarsDownParam = "dollarsdown"
-	amountParam = "amount"
-rateParam = "rate"
-scheduleParam = "schedule"
-termInMonthsParam = "terminmonths"
-propertyTaxParam = "propertytax"
-hazardParam = "hazardparam"
-pmiParam = "pmi"
-hoaParam = "hoa"
+	zwsIdParam          = "zws-Id"
+	zpidParam           = "zpid"
+	rentzestimateParam  = "rentzestimate"
+	addressParam        = "address"
+	cityStateZipParam   = "citystatezip"
+	unitTypeParam       = "unit-type"
+	widthParam          = "width"
+	heightParam         = "height"
+	chartDurationParam  = "chartDuration"
+	countParam          = "count"
+	cityParam           = "city"
+	stateParam          = "state"
+	neighboorhoodParam  = "neightborhood"
+	zipParam            = "zip"
+	countryParam        = "country"
+	childTypeParam      = "childtype"
+	regionIdParam       = "regionId"
+	priceParam          = "price"
+	downParam           = "down"
+	dollarsDownParam    = "dollarsdown"
+	amountParam         = "amount"
+	rateParam           = "rate"
+	scheduleParam       = "schedule"
+	termInMonthsParam   = "terminmonths"
+	propertyTaxParam    = "propertytax"
+	hazardParam         = "hazardparam"
+	pmiParam            = "pmi"
+	hoaParam            = "hoa"
+	annualIncomeParam   = "annualincome"
+	monthlyPaymentParam = "monthlypayments"
+	monthlyDebtsParam   = "monthlydebts"
+	debtToIncomeParam   = "debtsinincome"
+	incomeTaxParam      = "incometax"
+	estimateParam       = "estimate"
 )
 
 const (
-	zestimatePath              = "Zestimate"
-	searchResultsPath          = "SearchResults"
-	chartPath                  = "Chart"
-	compsPath                  = "Comps"
-	deepCompsPath              = "DeepComps"
-	deepSearchPath             = "DeepSearchResults"
-	updatedPropertyDetailsPath = "UpdatedPropertyDetails"
-	regionChildrenPath         = "RegionChildren"
-	regionChartPath            = "RegionChart"
-	rateSummaryPath            = "RateSummary"
-	monthlyPaymentsPath            = "MonthlyPayments"
-	monthlyPaymentsAdvancedPath = "MonthlyPaymentsAdvanced"
-	//TODO other services
+	zestimatePath               = "GetZestimate"
+	searchResultsPath           = "GetSearchResults"
+	chartPath                   = "GetChart"
+	compsPath                   = "GetComps"
+	deepCompsPath               = "GetDeepComps"
+	deepSearchPath              = "GetDeepSearchResults"
+	updatedPropertyDetailsPath  = "GetUpdatedPropertyDetails"
+	regionChildrenPath          = "GetRegionChildren"
+	regionChartPath             = "GetRegionChart"
+	rateSummaryPath             = "GetRateSummary"
+	monthlyPaymentsPath         = "GetMonthlyPayments"
+	monthlyPaymentsAdvancedPath = "CalculateMonthlyPaymentsAdvanced"
+	affordabilityPath           = "CalculateAffordability"
 )
 
 type zillow struct {
@@ -536,7 +597,7 @@ type zillow struct {
 }
 
 func (z *zillow) get(path string, values url.Values, result interface{}) error {
-	if resp, err := http.Get(z.url + "/Get" + path + ".htm?" + values.Encode()); err != nil {
+	if resp, err := http.Get(z.url + "/" + path + ".htm?" + values.Encode()); err != nil {
 		return err
 	} else if err = xml.NewDecoder(resp.Body).Decode(result); err != nil {
 		return err
@@ -700,11 +761,11 @@ func (z *zillow) GetRateSummary(request RateSummaryRequest) (*RateSummary, error
 
 func (z *zillow) GetMonthlyPayments(request MonthlyPaymentsRequest) (*MonthlyPayments, error) {
 	values := url.Values{
-		zwsIdParam: {z.zwsId},
-		priceParam: {strconv.Itoa(request.Price)},
-		downParam: {strconv.Itoa(request.Down)},
+		zwsIdParam:       {z.zwsId},
+		priceParam:       {strconv.Itoa(request.Price)},
+		downParam:        {strconv.Itoa(request.Down)},
 		dollarsDownParam: {strconv.Itoa(request.DollarsDown)},
-		zipParam: {request.Zip},
+		zipParam:         {request.Zip},
 	}
 	var result MonthlyPayments
 	if err := z.get(monthlyPaymentsPath, values, &result); err != nil {
@@ -716,21 +777,48 @@ func (z *zillow) GetMonthlyPayments(request MonthlyPaymentsRequest) (*MonthlyPay
 
 func (z *zillow) CalculateMonthlyPaymentsAdvanced(request MonthlyPaymentsAdvancedRequest) (*MonthlyPaymentsAdvanced, error) {
 	values := url.Values{
-		zwsIdParam: {z.zwsId},
-		priceParam: {strconv.Itoa(request.Price)},
-		downParam: {strconv.Itoa(request.Down)},
-		amountParam: {strconv.Itoa(request.Amount)},
-		rateParam: {strconv.FormatFloat(float64(request.Rate), 'f', -1, 32)},
-		scheduleParam: {request.Schedule},
+		zwsIdParam:        {z.zwsId},
+		priceParam:        {strconv.Itoa(request.Price)},
+		downParam:         {strconv.Itoa(request.Down)},
+		amountParam:       {strconv.Itoa(request.Amount)},
+		rateParam:         {strconv.FormatFloat(float64(request.Rate), 'f', -1, 32)},
+		scheduleParam:     {request.Schedule},
 		termInMonthsParam: {strconv.Itoa(request.TermInMonths)},
-		propertyTaxParam: {strconv.Itoa(request.PropertyTax)},
-		hazardParam: {strconv.Itoa(request.Hazard)},
-		pmiParam: {strconv.Itoa(request.PMI)},
-		hoaParam: {strconv.Itoa(request.HOA)},
-		zipParam: {request.Zip},
+		propertyTaxParam:  {strconv.Itoa(request.PropertyTax)},
+		hazardParam:       {strconv.Itoa(request.Hazard)},
+		pmiParam:          {strconv.Itoa(request.PMI)},
+		hoaParam:          {strconv.Itoa(request.HOA)},
+		zipParam:          {request.Zip},
 	}
 	var result MonthlyPaymentsAdvanced
 	if err := z.get(monthlyPaymentsAdvancedPath, values, &result); err != nil {
+		return nil, err
+	} else {
+		return &result, nil
+	}
+}
+
+func (z *zillow) CalculateAffordability(request AffordabilityRequest) (*Affordability, error) {
+	values := url.Values{
+		zwsIdParam:          {z.zwsId},
+		annualIncomeParam:   {strconv.Itoa(request.AnnualIncome)},
+		monthlyPaymentParam: {strconv.Itoa(request.MonthlyPayment)},
+		downParam:           {strconv.Itoa(request.Down)},
+		monthlyDebtsParam:   {strconv.Itoa(request.MonthlyDebts)},
+		rateParam:           {strconv.FormatFloat(float64(request.Rate), 'f', -1, 32)},
+		scheduleParam:       {request.Schedule},
+		termInMonthsParam:   {strconv.Itoa(request.TermInMonths)},
+		debtToIncomeParam:   {strconv.FormatFloat(float64(request.DebtToIncome), 'f', -1, 32)},
+		incomeTaxParam:      {strconv.FormatFloat(float64(request.IncomeTax), 'f', -1, 32)},
+		estimateParam:       {strconv.FormatBool(request.Estimate)},
+		propertyTaxParam:    {strconv.FormatFloat(float64(request.PropertyTax), 'f', -1, 32)},
+		hazardParam:         {strconv.Itoa(request.Hazard)},
+		pmiParam:            {strconv.Itoa(request.PMI)},
+		hoaParam:            {strconv.Itoa(request.HOA)},
+		zipParam:            {request.Zip},
+	}
+	var result Affordability
+	if err := z.get(affordabilityPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
