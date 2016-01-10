@@ -539,7 +539,7 @@ type Affordability struct {
 const baseUrl = "http://www.zillow.com/webservice/"
 
 const (
-	zwsIdParam          = "zws-Id"
+	zwsIdParam          = "zws-id"
 	zpidParam           = "zpid"
 	rentzestimateParam  = "rentzestimate"
 	addressParam        = "address"
