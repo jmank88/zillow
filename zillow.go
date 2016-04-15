@@ -66,12 +66,13 @@ type ValueChange struct {
 }
 
 type Zestimate struct {
-	Amount      Value       `xml:"amount"`
-	LastUpdated string      `xml:"last-updated"`
-	ValueChange ValueChange `xml:"valueChange"`
-	Low         Value       `xml:"valuationRange>low"`
-	High        Value       `xml:"valuationRange>high"`
-	Percentile  string      `xml:"percentile"`
+	Amount      Value  `xml:"amount"`
+	LastUpdated string `xml:"last-updated"`
+	// TODO(pedge): fix
+	//ValueChange ValueChange `xml:"valueChange"`
+	Low        Value  `xml:"valuationRange>low"`
+	High       Value  `xml:"valuationRange>high"`
+	Percentile string `xml:"percentile"`
 }
 
 type ZestimateRequest struct {
@@ -539,7 +540,7 @@ type Affordability struct {
 const baseUrl = "http://www.zillow.com/webservice/"
 
 const (
-	zwsIdParam          = "zws-Id"
+	zwsIdParam          = "zws-id"
 	zpidParam           = "zpid"
 	rentzestimateParam  = "rentzestimate"
 	addressParam        = "address"

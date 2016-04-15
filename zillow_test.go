@@ -2,7 +2,6 @@ package zillow
 
 import (
 	"encoding/xml"
-	"github.com/kr/pretty"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -12,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/kr/pretty"
 )
 
 const (
@@ -111,10 +112,10 @@ func TestGetZestimate(t *testing.T) {
 		Zestimate: Zestimate{
 			Amount:      Value{Currency: "USD", Value: 1219500},
 			LastUpdated: "11/03/2009",
-			ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: -41500},
-			Percentile:  "95",
-			Low:         Value{Currency: "USD", Value: 1024380},
-			High:        Value{Currency: "USD", Value: 1378035},
+			//ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: -41500},
+			Percentile: "95",
+			Low:        Value{Currency: "USD", Value: 1024380},
+			High:       Value{Currency: "USD", Value: 1378035},
 		},
 		LocalRealEstate: []RealEstateRegion{
 			RealEstateRegion{
@@ -205,10 +206,10 @@ func TestGetSearchResults(t *testing.T) {
 				Zestimate: Zestimate{
 					Amount:      Value{Currency: "USD", Value: 1219500},
 					LastUpdated: "11/03/2009",
-					ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: -41500},
-					Low:         Value{Currency: "USD", Value: 1024380},
-					High:        Value{Currency: "USD", Value: 1378035},
-					Percentile:  "0",
+					//ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: -41500},
+					Low:        Value{Currency: "USD", Value: 1024380},
+					High:       Value{Currency: "USD", Value: 1378035},
+					Percentile: "0",
 				},
 				LocalRealEstate: []RealEstateRegion{
 					RealEstateRegion{
@@ -442,10 +443,10 @@ func TestGetDeepComp(t *testing.T) {
 			Zestimate: Zestimate{
 				Amount:      Value{Currency: "USD", Value: 1219500},
 				LastUpdated: "12/31/1969",
-				ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: -41500},
-				Low:         Value{Currency: "USD", Value: 1024380},
-				High:        Value{Currency: "USD", Value: 1378035},
-				Percentile:  "95",
+				//ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: -41500},
+				Low:        Value{Currency: "USD", Value: 1024380},
+				High:       Value{Currency: "USD", Value: 1378035},
+				Percentile: "95",
 			},
 			LocalRealEstate: []RealEstateRegion{
 				RealEstateRegion{
@@ -514,10 +515,10 @@ func TestGetDeepComp(t *testing.T) {
 				Zestimate: Zestimate{
 					Amount:      Value{Currency: "USD", Value: 836500},
 					LastUpdated: "11/03/2009",
-					ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: -220500},
-					Low:         Value{Currency: "USD", Value: 777945},
-					High:        Value{Currency: "USD", Value: 886690},
-					Percentile:  "83",
+					//ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: -220500},
+					Low:        Value{Currency: "USD", Value: 777945},
+					High:       Value{Currency: "USD", Value: 886690},
+					Percentile: "83",
 				},
 			},
 			{
@@ -551,10 +552,10 @@ func TestGetDeepComp(t *testing.T) {
 				Zestimate: Zestimate{
 					Amount:      Value{Currency: "USD", Value: 608000},
 					LastUpdated: "11/03/2009",
-					ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: 11000},
-					Low:         Value{Currency: "USD", Value: 559360},
-					High:        Value{Currency: "USD", Value: 656640},
-					Percentile:  "68",
+					//ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: 11000},
+					Low:        Value{Currency: "USD", Value: 559360},
+					High:       Value{Currency: "USD", Value: 656640},
+					Percentile: "68",
 				},
 			},
 		},
@@ -619,10 +620,10 @@ func TestGetDeepSearchResults(t *testing.T) {
 				Zestimate: Zestimate{
 					Amount:      Value{Currency: "USD", Value: 1219500},
 					LastUpdated: "12/31/1969",
-					ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: -41500},
-					Low:         Value{Currency: "USD", Value: 1024380},
-					High:        Value{Currency: "USD", Value: 1378035},
-					Percentile:  "0",
+					//ValueChange: ValueChange{Duration: 30, Currency: "USD", Value: -41500},
+					Low:        Value{Currency: "USD", Value: 1024380},
+					High:       Value{Currency: "USD", Value: 1378035},
+					Percentile: "0",
 				},
 				LocalRealEstate: []RealEstateRegion{
 					RealEstateRegion{
