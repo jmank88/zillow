@@ -25,3 +25,6 @@ http://www.zillow.com/howto/api/APIOverview.htm
 - GetMonthlyPayments
 - CalculateMonthlyPaymentsAdvanced
 - CalculateAffordability
+
+
+Test out this API on [RapidAPI](https://rapidapi.com/package/Zillow/functions?utm_source=ZillowGitHub&utm_medium=button)
