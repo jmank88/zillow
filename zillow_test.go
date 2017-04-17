@@ -118,7 +118,7 @@ func TestGetZestimate(t *testing.T) {
 			High:       Value{Currency: "USD", Value: 1378035},
 		},
 		LocalRealEstate: []RealEstateRegion{
-			RealEstateRegion{
+			{
 				XMLName:             xml.Name{Local: "region"},
 				ID:                  "271856",
 				Type:                "neighborhood",
@@ -129,7 +129,7 @@ func TestGetZestimate(t *testing.T) {
 				ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/East-Queen-Anne-Seattle-WA/",
 				ForSale:             "http://www.zillow.com/east-queen-anne-seattle-wa/",
 			},
-			RealEstateRegion{
+			{
 				XMLName:             xml.Name{Local: "region"},
 				ID:                  "16037",
 				Type:                "city",
@@ -140,7 +140,7 @@ func TestGetZestimate(t *testing.T) {
 				ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/Seattle-WA/",
 				ForSale:             "http://www.zillow.com/seattle-wa/",
 			},
-			RealEstateRegion{
+			{
 				XMLName:             xml.Name{Local: "region"},
 				ID:                  "59",
 				Type:                "state",
@@ -185,7 +185,7 @@ func TestGetSearchResults(t *testing.T) {
 			Code: 0,
 		},
 		Results: []SearchResult{
-			SearchResult{
+			{
 				XMLName: xml.Name{Local: "result"},
 				Zpid:    "48749425",
 				Links: Links{
@@ -212,7 +212,7 @@ func TestGetSearchResults(t *testing.T) {
 					Percentile: "0",
 				},
 				LocalRealEstate: []RealEstateRegion{
-					RealEstateRegion{
+					{
 						XMLName:             xml.Name{Local: "region"},
 						ID:                  "271856",
 						Type:                "neighborhood",
@@ -223,7 +223,7 @@ func TestGetSearchResults(t *testing.T) {
 						ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/East-Queen-Anne-Seattle-WA/",
 						ForSale:             "http://www.zillow.com/east-queen-anne-seattle-wa/",
 					},
-					RealEstateRegion{
+					{
 						XMLName:             xml.Name{Local: "region"},
 						ID:                  "16037",
 						Type:                "city",
@@ -234,7 +234,7 @@ func TestGetSearchResults(t *testing.T) {
 						ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/Seattle-WA/",
 						ForSale:             "http://www.zillow.com/seattle-wa/",
 					},
-					RealEstateRegion{
+					{
 						XMLName:             xml.Name{Local: "region"},
 						ID:                  "59",
 						Type:                "state",
@@ -332,7 +332,7 @@ func TestGetComps(t *testing.T) {
 			},
 		},
 		Comparables: []Comp{
-			Comp{
+			{
 				Score: 0.257106811263241,
 				Zpid:  "48749459",
 				Links: Links{
@@ -358,7 +358,7 @@ func TestGetComps(t *testing.T) {
 					High:        Value{Currency: "USD", Value: 1083500},
 				},
 			},
-			Comp{
+			{
 				Score: 0.31179534464349695,
 				Zpid:  "0.31179534464349695",
 				Links: Links{
@@ -449,7 +449,7 @@ func TestGetDeepComp(t *testing.T) {
 				Percentile: "95",
 			},
 			LocalRealEstate: []RealEstateRegion{
-				RealEstateRegion{
+				{
 					XMLName:             xml.Name{Local: "region"},
 					ID:                  "271856",
 					Type:                "neighborhood",
@@ -460,7 +460,7 @@ func TestGetDeepComp(t *testing.T) {
 					ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/East-Queen-Anne-Seattle-WA/",
 					ForSale:             "http://www.zillow.com/east-queen-anne-seattle-wa/",
 				},
-				RealEstateRegion{
+				{
 					XMLName:             xml.Name{Local: "region"},
 					ID:                  "16037",
 					Type:                "city",
@@ -471,7 +471,7 @@ func TestGetDeepComp(t *testing.T) {
 					ForSaleByOwner:      "http://www.zillow.com/homes/fsbo/Seattle-WA/",
 					ForSale:             "http://www.zillow.com/seattle-wa/",
 				},
-				RealEstateRegion{
+				{
 					XMLName:             xml.Name{Local: "region"},
 					ID:                  "59",
 					Type:                "state",
@@ -626,7 +626,7 @@ func TestGetDeepSearchResults(t *testing.T) {
 					Percentile: "0",
 				},
 				LocalRealEstate: []RealEstateRegion{
-					RealEstateRegion{
+					{
 						XMLName:        xml.Name{Local: "region"},
 						ID:             "271856",
 						Type:           "neighborhood",
@@ -636,7 +636,7 @@ func TestGetDeepSearchResults(t *testing.T) {
 						ForSaleByOwner: "http://www.zillow.com/homes/fsbo/East-Queen-Anne-Seattle-WA/",
 						ForSale:        "http://www.zillow.com/east-queen-anne-seattle-wa/",
 					},
-					RealEstateRegion{
+					{
 						XMLName:        xml.Name{Local: "region"},
 						ID:             "16037",
 						Type:           "city",
@@ -646,7 +646,7 @@ func TestGetDeepSearchResults(t *testing.T) {
 						ForSaleByOwner: "http://www.zillow.com/homes/fsbo/Seattle-WA/",
 						ForSale:        "http://www.zillow.com/seattle-wa/",
 					},
-					RealEstateRegion{
+					{
 						XMLName:        xml.Name{Local: "region"},
 						ID:             "59",
 						Type:           "state",
@@ -873,14 +873,14 @@ func TestGetRateSummary(t *testing.T) {
 			Code: 0,
 		},
 		Today: []Rate{
-			Rate{LoanType: "thirtyYearFixed", Count: 1252, Value: 5.91},
-			Rate{LoanType: "fifteenYearFixed", Count: 839, Value: 5.68},
-			Rate{LoanType: "fiveOneARM", Count: 685, Value: 5.49},
+			{LoanType: "thirtyYearFixed", Count: 1252, Value: 5.91},
+			{LoanType: "fifteenYearFixed", Count: 839, Value: 5.68},
+			{LoanType: "fiveOneARM", Count: 685, Value: 5.49},
 		},
 		LastWeek: []Rate{
-			Rate{LoanType: "thirtyYearFixed", Count: 8933, Value: 6.02},
-			Rate{LoanType: "fifteenYearFixed", Count: 5801, Value: 5.94},
-			Rate{LoanType: "fiveOneARM", Count: 3148, Value: 5.71},
+			{LoanType: "thirtyYearFixed", Count: 8933, Value: 6.02},
+			{LoanType: "fifteenYearFixed", Count: 5801, Value: 5.94},
+			{LoanType: "fiveOneARM", Count: 3148, Value: 5.71},
 		},
 	}
 
