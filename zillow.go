@@ -34,8 +34,8 @@ type Zillow interface {
 	CalculateAffordability(AffordabilityRequest) (*Affordability, error)
 }
 
-// Creates a new zillow client.
-func NewZillow(zwsId string) Zillow {
+// New creates a new zillow client.
+func New(zwsId string) Zillow {
 	return &zillow{zwsId, baseUrl}
 }
 
