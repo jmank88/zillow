@@ -543,7 +543,7 @@ type Affordability struct {
 	AmortizationSchedule        AffordabilityAmortizationSchedule `xml:"response>amortizationschedule"`
 }
 
-const baseUrl = "http://www.zillow.com/webservice/"
+const baseUrl = "https://www.zillow.com/webservice/"
 
 const (
 	zwsIdParam          = "zws-id"
