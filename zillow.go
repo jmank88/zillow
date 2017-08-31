@@ -36,6 +36,12 @@ type Zillow interface {
 
 // New creates a new zillow client.
 func New(zwsId string) Zillow {
+	return NewExt(zwsId, baseUrl)
+}
+
+// NewExt creates a new zillow client.
+// It's like New but accepts more options.
+func NewExt(zwsId, baseUrl string) Zillow {
 	return &zillow{zwsId, baseUrl}
 }
 
