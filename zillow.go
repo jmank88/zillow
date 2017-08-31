@@ -34,8 +34,14 @@ type Zillow interface {
 	CalculateAffordability(AffordabilityRequest) (*Affordability, error)
 }
 
-// Creates a new zillow client.
-func NewZillow(zwsId string) Zillow {
+// New creates a new zillow client.
+func New(zwsId string) Zillow {
+	return NewExt(zwsId, baseUrl)
+}
+
+// NewExt creates a new zillow client.
+// It's like New but accepts more options.
+func NewExt(zwsId, baseUrl string) Zillow {
 	return &zillow{zwsId, baseUrl}
 }
 
@@ -537,7 +543,7 @@ type Affordability struct {
 	AmortizationSchedule        AffordabilityAmortizationSchedule `xml:"response>amortizationschedule"`
 }
 
-const baseUrl = "http://www.zillow.com/webservice/"
+const baseUrl = "https://www.zillow.com/webservice/"
 
 const (
 	zwsIdParam          = "zws-id"
