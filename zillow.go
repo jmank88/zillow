@@ -151,6 +151,7 @@ type SearchResult struct {
 	Links           Links              `xml:"links"`
 	Address         Address            `xml:"address"`
 	Zestimate       Zestimate          `xml:"zestimate"`
+	RentZestimate   *Zestimate         `xml:"rentzestimate"`
 	LocalRealEstate []RealEstateRegion `xml:"localRealEstate>region"`
 }
 
