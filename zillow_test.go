@@ -1,6 +1,7 @@
 package zillow
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"io"
 	"net/http"
@@ -11,8 +12,6 @@ import (
 	"strconv"
 	"strings"
 	"testing"
-
-	"github.com/kr/pretty"
 )
 
 const (
@@ -159,9 +158,16 @@ func TestGetZestimate(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
-			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v", prettyJSON(t, expected), prettyJSON(t, result))
 	}
+}
+
+func prettyJSON(t *testing.T, v interface{}) string {
+	p, err := json.MarshalIndent(v, "\t", " ")
+	if err != nil {
+		t.Fatalf("failed to marshal json: %v", err)
+	}
+	return string(p)
 }
 
 func TestGetSearchResults(t *testing.T) {
@@ -251,8 +257,7 @@ func TestGetSearchResults(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %s\n\n but got:\n %s\n\n diff:\n %s\n",
-			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+		t.Fatalf("expected:\n %s\n\n but got:\n %s", prettyJSON(t, expected), prettyJSON(t, result))
 	}
 }
 
@@ -281,8 +286,7 @@ func TestGetChart(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
-			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v", prettyJSON(t, expected), prettyJSON(t, result))
 	}
 }
 
@@ -388,8 +392,7 @@ func TestGetComps(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
-			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v", prettyJSON(t, expected), prettyJSON(t, result))
 	}
 }
 
@@ -562,8 +565,7 @@ func TestGetDeepComp(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
-			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v", prettyJSON(t, expected), prettyJSON(t, result))
 	}
 }
 
@@ -662,8 +664,7 @@ func TestGetDeepSearchResults(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %s\n\n but got:\n %s\n\n diff:\n %s\n",
-			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+		t.Fatalf("expected:\n %s\n\n but got:\n %s", prettyJSON(t, expected), prettyJSON(t, result))
 	}
 }
 
@@ -743,8 +744,7 @@ func TestGetUpdatedPropertyDetails(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
-			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v", prettyJSON(t, expected), prettyJSON(t, result))
 	}
 }
 
@@ -812,8 +812,7 @@ func TestGetRegionChildren(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
-			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v", prettyJSON(t, expected), prettyJSON(t, result))
 	}
 }
 
@@ -850,8 +849,7 @@ func TestGetRegionChart(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
-			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v", prettyJSON(t, expected), prettyJSON(t, result))
 	}
 }
 
@@ -885,8 +883,7 @@ func TestGetRateSummary(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
-			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v", prettyJSON(t, expected), prettyJSON(t, result))
 	}
 }
 
@@ -912,20 +909,20 @@ func TestGetMonthlyPayments(t *testing.T) {
 		},
 		Payments: []Payment{
 			{
-				LoanType: "thirtyYearFixed",
-				Rate:     5.9,
+				LoanType:                    "thirtyYearFixed",
+				Rate:                        5.9,
 				MonthlyPrincipalAndInterest: 1512,
 				MonthlyMortgageInsurance:    68,
 			},
 			{
-				LoanType: "fifteenYearFixed",
-				Rate:     5.68,
+				LoanType:                    "fifteenYearFixed",
+				Rate:                        5.68,
 				MonthlyPrincipalAndInterest: 1477,
 				MonthlyMortgageInsurance:    68,
 			},
 			{
-				LoanType: "fiveOneARM",
-				Rate:     5.71,
+				LoanType:                    "fiveOneARM",
+				Rate:                        5.71,
 				MonthlyPrincipalAndInterest: 1482,
 				MonthlyMortgageInsurance:    74,
 			},
@@ -936,8 +933,7 @@ func TestGetMonthlyPayments(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
-			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v", prettyJSON(t, expected), prettyJSON(t, result))
 	}
 }
 
@@ -1016,8 +1012,7 @@ func TestCalculateMonthlyPaymentsAdvanced(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
-			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v", prettyJSON(t, expected), prettyJSON(t, result))
 	}
 }
 
@@ -1124,7 +1119,6 @@ func TestCalculateAffordability(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(result, expected) {
-		t.Fatalf("expected:\n %#v\n\n but got:\n %#v\n\n diff:\n %s\n",
-			pretty.Formatter(expected), pretty.Formatter(result), pretty.Diff(expected, result))
+		t.Fatalf("expected:\n %#v\n\n but got:\n %#v", prettyJSON(t, expected), prettyJSON(t, result))
 	}
 }
