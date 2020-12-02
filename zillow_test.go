@@ -56,7 +56,7 @@ func assertOnlyParam(t *testing.T, values url.Values, param, expected string) {
 	}
 }
 
-func testFixtures(t *testing.T, expectedPath string, validateQuery func(url.Values)) (*httptest.Server, Zillow) {
+func testFixtures(t *testing.T, expectedPath string, validateQuery func(url.Values)) (*httptest.Server, *Zillow) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !strings.HasSuffix(r.URL.Path, expectedPath+".htm") {
 			t.Errorf("expected path %q to end with %q", r.URL.Path, expectedPath)
@@ -71,7 +71,7 @@ func testFixtures(t *testing.T, expectedPath string, validateQuery func(url.Valu
 			t.Fatal(err)
 		}
 	}))
-	return ts, &zillow{zwsId: testZwsId, url: ts.URL}
+	return ts, &Zillow{zwsId: testZwsId, url: ts.URL}
 }
 
 func TestGetZestimate(t *testing.T) {

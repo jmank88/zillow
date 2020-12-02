@@ -9,40 +9,15 @@ import (
 	"strconv"
 )
 
-type Zillow interface {
-	// Home Valuation
-	GetZestimate(ZestimateRequest) (*ZestimateResult, error)
-	GetSearchResults(SearchRequest) (*SearchResults, error)
-	GetChart(ChartRequest) (*ChartResult, error)
-	GetComps(CompsRequest) (*CompsResult, error)
-
-	// Property Details
-	GetDeepComps(CompsRequest) (*DeepCompsResult, error)
-	GetDeepSearchResults(SearchRequest) (*DeepSearchResults, error)
-	GetUpdatedPropertyDetails(request UpdatedPropertyDetailsRequest) (*UpdatedPropertyDetails, error)
-
-	// Neighborhood Data
-	GetRegionChildren(RegionChildrenRequest) (*RegionChildren, error)
-	GetRegionChart(RegionChartRequest) (*RegionChartResult, error)
-
-	// Mortgage Rates
-	GetRateSummary(RateSummaryRequest) (*RateSummary, error)
-
-	// Mortgage Calculators
-	GetMonthlyPayments(MonthlyPaymentsRequest) (*MonthlyPayments, error)
-	CalculateMonthlyPaymentsAdvanced(MonthlyPaymentsAdvancedRequest) (*MonthlyPaymentsAdvanced, error)
-	CalculateAffordability(AffordabilityRequest) (*Affordability, error)
-}
-
 // New creates a new zillow client.
-func New(zwsId string) Zillow {
+func New(zwsId string) *Zillow {
 	return NewExt(zwsId, baseUrl)
 }
 
 // NewExt creates a new zillow client.
 // It's like New but accepts more options.
-func NewExt(zwsId, baseUrl string) Zillow {
-	return &zillow{zwsId, baseUrl}
+func NewExt(zwsId, baseUrl string) *Zillow {
+	return &Zillow{zwsId, baseUrl}
 }
 
 type Message struct {
@@ -599,12 +574,12 @@ const (
 	affordabilityPath           = "CalculateAffordability"
 )
 
-type zillow struct {
+type Zillow struct {
 	zwsId string
 	url   string
 }
 
-func (z *zillow) get(path string, values url.Values, result interface{}) error {
+func (z *Zillow) get(path string, values url.Values, result interface{}) error {
 	if resp, err := http.Get(z.url + "/" + path + ".htm?" + values.Encode()); err != nil {
 		return err
 	} else if err = xml.NewDecoder(resp.Body).Decode(result); err != nil {
@@ -613,7 +588,7 @@ func (z *zillow) get(path string, values url.Values, result interface{}) error {
 	return nil
 }
 
-func (z *zillow) GetZestimate(request ZestimateRequest) (*ZestimateResult, error) {
+func (z *Zillow) GetZestimate(request ZestimateRequest) (*ZestimateResult, error) {
 	values := url.Values{
 		zwsIdParam:         {z.zwsId},
 		zpidParam:          {request.Zpid},
@@ -627,7 +602,7 @@ func (z *zillow) GetZestimate(request ZestimateRequest) (*ZestimateResult, error
 	}
 }
 
-func (z *zillow) GetSearchResults(request SearchRequest) (*SearchResults, error) {
+func (z *Zillow) GetSearchResults(request SearchRequest) (*SearchResults, error) {
 	values := url.Values{
 		zwsIdParam:         {z.zwsId},
 		addressParam:       {request.Address},
@@ -642,7 +617,7 @@ func (z *zillow) GetSearchResults(request SearchRequest) (*SearchResults, error)
 	}
 }
 
-func (z *zillow) GetChart(request ChartRequest) (*ChartResult, error) {
+func (z *Zillow) GetChart(request ChartRequest) (*ChartResult, error) {
 	values := url.Values{
 		zwsIdParam:         {z.zwsId},
 		zpidParam:          {request.Zpid},
@@ -659,7 +634,7 @@ func (z *zillow) GetChart(request ChartRequest) (*ChartResult, error) {
 	}
 }
 
-func (z *zillow) GetComps(request CompsRequest) (*CompsResult, error) {
+func (z *Zillow) GetComps(request CompsRequest) (*CompsResult, error) {
 	values := url.Values{
 		zwsIdParam:         {z.zwsId},
 		zpidParam:          {request.Zpid},
@@ -674,7 +649,7 @@ func (z *zillow) GetComps(request CompsRequest) (*CompsResult, error) {
 	}
 }
 
-func (z *zillow) GetDeepComps(request CompsRequest) (*DeepCompsResult, error) {
+func (z *Zillow) GetDeepComps(request CompsRequest) (*DeepCompsResult, error) {
 	values := url.Values{
 		zwsIdParam:         {z.zwsId},
 		zpidParam:          {request.Zpid},
@@ -689,7 +664,7 @@ func (z *zillow) GetDeepComps(request CompsRequest) (*DeepCompsResult, error) {
 	}
 }
 
-func (z *zillow) GetDeepSearchResults(request SearchRequest) (*DeepSearchResults, error) {
+func (z *Zillow) GetDeepSearchResults(request SearchRequest) (*DeepSearchResults, error) {
 	values := url.Values{
 		zwsIdParam:         {z.zwsId},
 		addressParam:       {request.Address},
@@ -704,7 +679,7 @@ func (z *zillow) GetDeepSearchResults(request SearchRequest) (*DeepSearchResults
 	}
 }
 
-func (z *zillow) GetUpdatedPropertyDetails(request UpdatedPropertyDetailsRequest) (*UpdatedPropertyDetails, error) {
+func (z *Zillow) GetUpdatedPropertyDetails(request UpdatedPropertyDetailsRequest) (*UpdatedPropertyDetails, error) {
 	values := url.Values{
 		zwsIdParam: {z.zwsId},
 		zpidParam:  {request.Zpid},
@@ -717,7 +692,7 @@ func (z *zillow) GetUpdatedPropertyDetails(request UpdatedPropertyDetailsRequest
 	}
 }
 
-func (z *zillow) GetRegionChildren(request RegionChildrenRequest) (*RegionChildren, error) {
+func (z *Zillow) GetRegionChildren(request RegionChildrenRequest) (*RegionChildren, error) {
 	values := url.Values{
 		zwsIdParam:     {z.zwsId},
 		regionIdParam:  {request.RegionId},
@@ -734,7 +709,7 @@ func (z *zillow) GetRegionChildren(request RegionChildrenRequest) (*RegionChildr
 	}
 }
 
-func (z *zillow) GetRegionChart(request RegionChartRequest) (*RegionChartResult, error) {
+func (z *Zillow) GetRegionChart(request RegionChartRequest) (*RegionChartResult, error) {
 	values := url.Values{
 		zwsIdParam:         {z.zwsId},
 		cityParam:          {request.City},
@@ -754,7 +729,7 @@ func (z *zillow) GetRegionChart(request RegionChartRequest) (*RegionChartResult,
 	}
 }
 
-func (z *zillow) GetRateSummary(request RateSummaryRequest) (*RateSummary, error) {
+func (z *Zillow) GetRateSummary(request RateSummaryRequest) (*RateSummary, error) {
 	values := url.Values{
 		zwsIdParam: {z.zwsId},
 		stateParam: {request.State},
@@ -767,7 +742,7 @@ func (z *zillow) GetRateSummary(request RateSummaryRequest) (*RateSummary, error
 	}
 }
 
-func (z *zillow) GetMonthlyPayments(request MonthlyPaymentsRequest) (*MonthlyPayments, error) {
+func (z *Zillow) GetMonthlyPayments(request MonthlyPaymentsRequest) (*MonthlyPayments, error) {
 	values := url.Values{
 		zwsIdParam:       {z.zwsId},
 		priceParam:       {strconv.Itoa(request.Price)},
@@ -783,7 +758,7 @@ func (z *zillow) GetMonthlyPayments(request MonthlyPaymentsRequest) (*MonthlyPay
 	}
 }
 
-func (z *zillow) CalculateMonthlyPaymentsAdvanced(request MonthlyPaymentsAdvancedRequest) (*MonthlyPaymentsAdvanced, error) {
+func (z *Zillow) CalculateMonthlyPaymentsAdvanced(request MonthlyPaymentsAdvancedRequest) (*MonthlyPaymentsAdvanced, error) {
 	values := url.Values{
 		zwsIdParam:        {z.zwsId},
 		priceParam:        {strconv.Itoa(request.Price)},
@@ -806,7 +781,7 @@ func (z *zillow) CalculateMonthlyPaymentsAdvanced(request MonthlyPaymentsAdvance
 	}
 }
 
-func (z *zillow) CalculateAffordability(request AffordabilityRequest) (*Affordability, error) {
+func (z *Zillow) CalculateAffordability(request AffordabilityRequest) (*Affordability, error) {
 	values := url.Values{
 		zwsIdParam:          {z.zwsId},
 		annualIncomeParam:   {strconv.Itoa(request.AnnualIncome)},
