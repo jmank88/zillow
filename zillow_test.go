@@ -72,7 +72,7 @@ func testFixtures(t *testing.T, expectedPath string, validateQuery func(url.Valu
 			t.Fatal(err)
 		}
 	}))
-	return ts, &zillow{zwsId: testZwsId, url: ts.URL}
+	return ts, NewZillow(Config{ZWSID: testZwsId, URL: ts.URL})
 }
 
 func TestGetZestimate(t *testing.T) {
