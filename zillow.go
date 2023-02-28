@@ -3,46 +3,70 @@
 package zillow
 
 import (
+	"context"
 	"encoding/xml"
 	"net/http"
 	"net/url"
 	"strconv"
 )
 
+type Config struct {
+	ZWSID  string       // required
+	URL    string       // optional
+	Client *http.Client // optional
+}
+
+func NewZillow(c Config) Zillow {
+	z := &zillow{
+		zwsId:  c.ZWSID,
+		url:    c.URL,
+		client: c.Client,
+	}
+	if z.url == "" {
+		z.url = baseUrl
+	}
+	if z.client == nil {
+		z.client = http.DefaultClient
+	}
+	return z
+}
+
 type Zillow interface {
 	// Home Valuation
-	GetZestimate(ZestimateRequest) (*ZestimateResult, error)
-	GetSearchResults(SearchRequest) (*SearchResults, error)
-	GetChart(ChartRequest) (*ChartResult, error)
-	GetComps(CompsRequest) (*CompsResult, error)
+	GetZestimate(context.Context, ZestimateRequest) (*ZestimateResult, error)
+	GetSearchResults(context.Context, SearchRequest) (*SearchResults, error)
+	GetChart(context.Context, ChartRequest) (*ChartResult, error)
+	GetComps(context.Context, CompsRequest) (*CompsResult, error)
 
 	// Property Details
-	GetDeepComps(CompsRequest) (*DeepCompsResult, error)
-	GetDeepSearchResults(SearchRequest) (*DeepSearchResults, error)
-	GetUpdatedPropertyDetails(request UpdatedPropertyDetailsRequest) (*UpdatedPropertyDetails, error)
+	GetDeepComps(context.Context, CompsRequest) (*DeepCompsResult, error)
+	GetDeepSearchResults(context.Context, SearchRequest) (*DeepSearchResults, error)
+	GetUpdatedPropertyDetails(ctx context.Context, request UpdatedPropertyDetailsRequest) (*UpdatedPropertyDetails, error)
 
 	// Neighborhood Data
-	GetRegionChildren(RegionChildrenRequest) (*RegionChildren, error)
-	GetRegionChart(RegionChartRequest) (*RegionChartResult, error)
+	GetRegionChildren(context.Context, RegionChildrenRequest) (*RegionChildren, error)
+	GetRegionChart(context.Context, RegionChartRequest) (*RegionChartResult, error)
 
 	// Mortgage Rates
-	GetRateSummary(RateSummaryRequest) (*RateSummary, error)
+	GetRateSummary(context.Context, RateSummaryRequest) (*RateSummary, error)
 
 	// Mortgage Calculators
-	GetMonthlyPayments(MonthlyPaymentsRequest) (*MonthlyPayments, error)
-	CalculateMonthlyPaymentsAdvanced(MonthlyPaymentsAdvancedRequest) (*MonthlyPaymentsAdvanced, error)
-	CalculateAffordability(AffordabilityRequest) (*Affordability, error)
+	GetMonthlyPayments(context.Context, MonthlyPaymentsRequest) (*MonthlyPayments, error)
+	CalculateMonthlyPaymentsAdvanced(context.Context, MonthlyPaymentsAdvancedRequest) (*MonthlyPaymentsAdvanced, error)
+	CalculateAffordability(context.Context, AffordabilityRequest) (*Affordability, error)
 }
 
 // New creates a new zillow client.
+// Deprecated. Use NewZillow() instead.
 func New(zwsId string) Zillow {
-	return NewExt(zwsId, baseUrl)
+	return NewZillow(Config{ZWSID: zwsId, URL: baseUrl})
 }
 
 // NewExt creates a new zillow client.
 // It's like New but accepts more options.
+// Deprecated. Use NewZillow() instead.
 func NewExt(zwsId, baseUrl string) Zillow {
-	return &zillow{zwsId, baseUrl}
+	return NewZillow(Config{ZWSID: zwsId, URL: baseUrl})
 }
 
 type Message struct {
@@ -602,10 +626,14 @@ const (
 type zillow struct {
 	zwsId string
 	url   string
+
+	client *http.Client
 }
 
-func (z *zillow) get(path string, values url.Values, result interface{}) error {
-	if resp, err := http.Get(z.url + "/" + path + ".htm?" + values.Encode()); err != nil {
+func (z *zillow) get(ctx context.Context, path string, values url.Values, result interface{}) error {
+	if req, err := http.NewRequestWithContext(ctx, "GET", z.url+"/"+path+".htm?"+values.Encode(), nil); err != nil {
+		return err
+	} else if resp, err := z.client.Do(req); err != nil {
 		return err
 	} else if err = xml.NewDecoder(resp.Body).Decode(result); err != nil {
 		return err
@@ -613,21 +641,21 @@ func (z *zillow) get(path string, values url.Values, result interface{}) error {
 	return nil
 }
 
-func (z *zillow) GetZestimate(request ZestimateRequest) (*ZestimateResult, error) {
+func (z *zillow) GetZestimate(ctx context.Context, request ZestimateRequest) (*ZestimateResult, error) {
 	values := url.Values{
 		zwsIdParam:         {z.zwsId},
 		zpidParam:          {request.Zpid},
 		rentzestimateParam: {strconv.FormatBool(request.Rentzestimate)},
 	}
 	var result ZestimateResult
-	if err := z.get(zestimatePath, values, &result); err != nil {
+	if err := z.get(ctx, zestimatePath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
 	}
 }
 
-func (z *zillow) GetSearchResults(request SearchRequest) (*SearchResults, error) {
+func (z *zillow) GetSearchResults(ctx context.Context, request SearchRequest) (*SearchResults, error) {
 	values := url.Values{
 		zwsIdParam:         {z.zwsId},
 		addressParam:       {request.Address},
@@ -635,14 +663,14 @@ func (z *zillow) GetSearchResults(request SearchRequest) (*SearchResults, error)
 		rentzestimateParam: {strconv.FormatBool(request.Rentzestimate)},
 	}
 	var result SearchResults
-	if err := z.get(searchResultsPath, values, &result); err != nil {
+	if err := z.get(ctx, searchResultsPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
 	}
 }
 
-func (z *zillow) GetChart(request ChartRequest) (*ChartResult, error) {
+func (z *zillow) GetChart(ctx context.Context, request ChartRequest) (*ChartResult, error) {
 	values := url.Values{
 		zwsIdParam:         {z.zwsId},
 		zpidParam:          {request.Zpid},
@@ -652,14 +680,14 @@ func (z *zillow) GetChart(request ChartRequest) (*ChartResult, error) {
 		chartDurationParam: {request.Duration},
 	}
 	var result ChartResult
-	if err := z.get(chartPath, values, &result); err != nil {
+	if err := z.get(ctx, chartPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
 	}
 }
 
-func (z *zillow) GetComps(request CompsRequest) (*CompsResult, error) {
+func (z *zillow) GetComps(ctx context.Context, request CompsRequest) (*CompsResult, error) {
 	values := url.Values{
 		zwsIdParam:         {z.zwsId},
 		zpidParam:          {request.Zpid},
@@ -667,14 +695,14 @@ func (z *zillow) GetComps(request CompsRequest) (*CompsResult, error) {
 		rentzestimateParam: {strconv.FormatBool(request.Rentzestimate)},
 	}
 	var result CompsResult
-	if err := z.get(compsPath, values, &result); err != nil {
+	if err := z.get(ctx, compsPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
 	}
 }
 
-func (z *zillow) GetDeepComps(request CompsRequest) (*DeepCompsResult, error) {
+func (z *zillow) GetDeepComps(ctx context.Context, request CompsRequest) (*DeepCompsResult, error) {
 	values := url.Values{
 		zwsIdParam:         {z.zwsId},
 		zpidParam:          {request.Zpid},
@@ -682,14 +710,14 @@ func (z *zillow) GetDeepComps(request CompsRequest) (*DeepCompsResult, error) {
 		rentzestimateParam: {strconv.FormatBool(request.Rentzestimate)},
 	}
 	var result DeepCompsResult
-	if err := z.get(deepCompsPath, values, &result); err != nil {
+	if err := z.get(ctx, deepCompsPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
 	}
 }
 
-func (z *zillow) GetDeepSearchResults(request SearchRequest) (*DeepSearchResults, error) {
+func (z *zillow) GetDeepSearchResults(ctx context.Context, request SearchRequest) (*DeepSearchResults, error) {
 	values := url.Values{
 		zwsIdParam:         {z.zwsId},
 		addressParam:       {request.Address},
@@ -697,27 +725,27 @@ func (z *zillow) GetDeepSearchResults(request SearchRequest) (*DeepSearchResults
 		rentzestimateParam: {strconv.FormatBool(request.Rentzestimate)},
 	}
 	var result DeepSearchResults
-	if err := z.get(deepSearchPath, values, &result); err != nil {
+	if err := z.get(ctx, deepSearchPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
 	}
 }
 
-func (z *zillow) GetUpdatedPropertyDetails(request UpdatedPropertyDetailsRequest) (*UpdatedPropertyDetails, error) {
+func (z *zillow) GetUpdatedPropertyDetails(ctx context.Context, request UpdatedPropertyDetailsRequest) (*UpdatedPropertyDetails, error) {
 	values := url.Values{
 		zwsIdParam: {z.zwsId},
 		zpidParam:  {request.Zpid},
 	}
 	var result UpdatedPropertyDetails
-	if err := z.get(updatedPropertyDetailsPath, values, &result); err != nil {
+	if err := z.get(ctx, updatedPropertyDetailsPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
 	}
 }
 
-func (z *zillow) GetRegionChildren(request RegionChildrenRequest) (*RegionChildren, error) {
+func (z *zillow) GetRegionChildren(ctx context.Context, request RegionChildrenRequest) (*RegionChildren, error) {
 	values := url.Values{
 		zwsIdParam:     {z.zwsId},
 		regionIdParam:  {request.RegionId},
@@ -727,14 +755,14 @@ func (z *zillow) GetRegionChildren(request RegionChildrenRequest) (*RegionChildr
 		childTypeParam: {request.ChildType},
 	}
 	var result RegionChildren
-	if err := z.get(regionChildrenPath, values, &result); err != nil {
+	if err := z.get(ctx, regionChildrenPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
 	}
 }
 
-func (z *zillow) GetRegionChart(request RegionChartRequest) (*RegionChartResult, error) {
+func (z *zillow) GetRegionChart(ctx context.Context, request RegionChartRequest) (*RegionChartResult, error) {
 	values := url.Values{
 		zwsIdParam:         {z.zwsId},
 		cityParam:          {request.City},
@@ -747,27 +775,27 @@ func (z *zillow) GetRegionChart(request RegionChartRequest) (*RegionChartResult,
 		chartDurationParam: {request.ChartDuration},
 	}
 	var result RegionChartResult
-	if err := z.get(regionChartPath, values, &result); err != nil {
+	if err := z.get(ctx, regionChartPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
 	}
 }
 
-func (z *zillow) GetRateSummary(request RateSummaryRequest) (*RateSummary, error) {
+func (z *zillow) GetRateSummary(ctx context.Context, request RateSummaryRequest) (*RateSummary, error) {
 	values := url.Values{
 		zwsIdParam: {z.zwsId},
 		stateParam: {request.State},
 	}
 	var result RateSummary
-	if err := z.get(rateSummaryPath, values, &result); err != nil {
+	if err := z.get(ctx, rateSummaryPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
 	}
 }
 
-func (z *zillow) GetMonthlyPayments(request MonthlyPaymentsRequest) (*MonthlyPayments, error) {
+func (z *zillow) GetMonthlyPayments(ctx context.Context, request MonthlyPaymentsRequest) (*MonthlyPayments, error) {
 	values := url.Values{
 		zwsIdParam:       {z.zwsId},
 		priceParam:       {strconv.Itoa(request.Price)},
@@ -776,14 +804,14 @@ func (z *zillow) GetMonthlyPayments(request MonthlyPaymentsRequest) (*MonthlyPay
 		zipParam:         {request.Zip},
 	}
 	var result MonthlyPayments
-	if err := z.get(monthlyPaymentsPath, values, &result); err != nil {
+	if err := z.get(ctx, monthlyPaymentsPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
 	}
 }
 
-func (z *zillow) CalculateMonthlyPaymentsAdvanced(request MonthlyPaymentsAdvancedRequest) (*MonthlyPaymentsAdvanced, error) {
+func (z *zillow) CalculateMonthlyPaymentsAdvanced(ctx context.Context, request MonthlyPaymentsAdvancedRequest) (*MonthlyPaymentsAdvanced, error) {
 	values := url.Values{
 		zwsIdParam:        {z.zwsId},
 		priceParam:        {strconv.Itoa(request.Price)},
@@ -799,14 +827,14 @@ func (z *zillow) CalculateMonthlyPaymentsAdvanced(request MonthlyPaymentsAdvance
 		zipParam:          {request.Zip},
 	}
 	var result MonthlyPaymentsAdvanced
-	if err := z.get(monthlyPaymentsAdvancedPath, values, &result); err != nil {
+	if err := z.get(ctx, monthlyPaymentsAdvancedPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil
 	}
 }
 
-func (z *zillow) CalculateAffordability(request AffordabilityRequest) (*Affordability, error) {
+func (z *zillow) CalculateAffordability(ctx context.Context, request AffordabilityRequest) (*Affordability, error) {
 	values := url.Values{
 		zwsIdParam:          {z.zwsId},
 		annualIncomeParam:   {strconv.Itoa(request.AnnualIncome)},
@@ -826,7 +854,7 @@ func (z *zillow) CalculateAffordability(request AffordabilityRequest) (*Affordab
 		zipParam:            {request.Zip},
 	}
 	var result Affordability
-	if err := z.get(affordabilityPath, values, &result); err != nil {
+	if err := z.get(ctx, affordabilityPath, values, &result); err != nil {
 		return nil, err
 	} else {
 		return &result, nil

@@ -1,6 +1,7 @@
 package zillow
 
 import (
+	"context"
 	"encoding/json"
 	"encoding/xml"
 	"io"
@@ -71,10 +72,11 @@ func testFixtures(t *testing.T, expectedPath string, validateQuery func(url.Valu
 			t.Fatal(err)
 		}
 	}))
-	return ts, &zillow{zwsId: testZwsId, url: ts.URL}
+	return ts, NewZillow(Config{ZWSID: testZwsId, URL: ts.URL})
 }
 
 func TestGetZestimate(t *testing.T) {
+	ctx := context.Background()
 	server, zillow := testFixtures(t, zestimatePath, func(values url.Values) {
 		assertOnlyParam(t, values, zpidParam, zpid)
 		assertOnlyParam(t, values, rentzestimateParam, "false")
@@ -82,7 +84,7 @@ func TestGetZestimate(t *testing.T) {
 	defer server.Close()
 
 	request := ZestimateRequest{Zpid: zpid}
-	result, err := zillow.GetZestimate(request)
+	result, err := zillow.GetZestimate(ctx, request)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -171,6 +173,7 @@ func prettyJSON(t *testing.T, v interface{}) string {
 }
 
 func TestGetSearchResults(t *testing.T) {
+	ctx := context.Background()
 	server, zillow := testFixtures(t, searchResultsPath, func(values url.Values) {
 		assertOnlyParam(t, values, addressParam, address)
 		assertOnlyParam(t, values, cityStateZipParam, citystatezip)
@@ -179,7 +182,7 @@ func TestGetSearchResults(t *testing.T) {
 	defer server.Close()
 
 	request := SearchRequest{Address: address, CityStateZip: citystatezip}
-	result, err := zillow.GetSearchResults(request)
+	result, err := zillow.GetSearchResults(ctx, request)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -262,6 +265,7 @@ func TestGetSearchResults(t *testing.T) {
 }
 
 func TestGetChart(t *testing.T) {
+	ctx := context.Background()
 	server, zillow := testFixtures(t, chartPath, func(values url.Values) {
 		assertOnlyParam(t, values, zpidParam, zpid)
 		assertOnlyParam(t, values, unitTypeParam, unitType)
@@ -271,7 +275,7 @@ func TestGetChart(t *testing.T) {
 	defer server.Close()
 
 	request := ChartRequest{Zpid: zpid, UnitType: unitType, Width: width, Height: height}
-	result, err := zillow.GetChart(request)
+	result, err := zillow.GetChart(ctx, request)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -291,6 +295,7 @@ func TestGetChart(t *testing.T) {
 }
 
 func TestGetComps(t *testing.T) {
+	ctx := context.Background()
 	server, zillow := testFixtures(t, compsPath, func(values url.Values) {
 		assertOnlyParam(t, values, zpidParam, zpid)
 		assertOnlyParam(t, values, countParam, strconv.Itoa(count))
@@ -299,7 +304,7 @@ func TestGetComps(t *testing.T) {
 	defer server.Close()
 
 	request := CompsRequest{Zpid: zpid, Count: count}
-	result, err := zillow.GetComps(request)
+	result, err := zillow.GetComps(ctx, request)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -397,6 +402,7 @@ func TestGetComps(t *testing.T) {
 }
 
 func TestGetDeepComp(t *testing.T) {
+	ctx := context.Background()
 	server, zillow := testFixtures(t, deepCompsPath, func(values url.Values) {
 		assertOnlyParam(t, values, zpidParam, zpid)
 		assertOnlyParam(t, values, countParam, strconv.Itoa(count))
@@ -405,7 +411,7 @@ func TestGetDeepComp(t *testing.T) {
 	defer server.Close()
 
 	request := CompsRequest{Zpid: zpid, Count: count}
-	result, err := zillow.GetDeepComps(request)
+	result, err := zillow.GetDeepComps(ctx, request)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -570,6 +576,7 @@ func TestGetDeepComp(t *testing.T) {
 }
 
 func TestGetDeepSearchResults(t *testing.T) {
+	ctx := context.Background()
 	server, zillow := testFixtures(t, deepSearchPath, func(values url.Values) {
 		assertOnlyParam(t, values, addressParam, address)
 		assertOnlyParam(t, values, cityStateZipParam, citystatezip)
@@ -578,7 +585,7 @@ func TestGetDeepSearchResults(t *testing.T) {
 	defer server.Close()
 
 	request := SearchRequest{Address: address, CityStateZip: citystatezip}
-	result, err := zillow.GetDeepSearchResults(request)
+	result, err := zillow.GetDeepSearchResults(ctx, request)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -669,6 +676,7 @@ func TestGetDeepSearchResults(t *testing.T) {
 }
 
 func TestGetUpdatedPropertyDetails(t *testing.T) {
+	ctx := context.Background()
 	server, zillow := testFixtures(t, updatedPropertyDetailsPath, func(values url.Values) {
 		assertOnlyParam(t, values, zpidParam, zpid)
 	})
@@ -677,7 +685,7 @@ func TestGetUpdatedPropertyDetails(t *testing.T) {
 	request := UpdatedPropertyDetailsRequest{
 		Zpid: zpid,
 	}
-	result, err := zillow.GetUpdatedPropertyDetails(request)
+	result, err := zillow.GetUpdatedPropertyDetails(ctx, request)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -749,6 +757,7 @@ func TestGetUpdatedPropertyDetails(t *testing.T) {
 }
 
 func TestGetRegionChildren(t *testing.T) {
+	ctx := context.Background()
 	server, zillow := testFixtures(t, regionChildrenPath, func(values url.Values) {
 		assertOnlyParam(t, values, cityParam, regionCity)
 		assertOnlyParam(t, values, stateParam, regionState)
@@ -761,7 +770,7 @@ func TestGetRegionChildren(t *testing.T) {
 		State:     regionState,
 		ChildType: childType,
 	}
-	result, err := zillow.GetRegionChildren(request)
+	result, err := zillow.GetRegionChildren(ctx, request)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -817,6 +826,7 @@ func TestGetRegionChildren(t *testing.T) {
 }
 
 func TestGetRegionChart(t *testing.T) {
+	ctx := context.Background()
 	server, zillow := testFixtures(t, regionChartPath, func(values url.Values) {
 		assertOnlyParam(t, values, cityParam, city)
 		assertOnlyParam(t, values, stateParam, state)
@@ -833,7 +843,7 @@ func TestGetRegionChart(t *testing.T) {
 		Width:    width,
 		Height:   height,
 	}
-	result, err := zillow.GetRegionChart(request)
+	result, err := zillow.GetRegionChart(ctx, request)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -854,13 +864,14 @@ func TestGetRegionChart(t *testing.T) {
 }
 
 func TestGetRateSummary(t *testing.T) {
+	ctx := context.Background()
 	server, zillow := testFixtures(t, rateSummaryPath, func(values url.Values) {
 		assertOnlyParam(t, values, stateParam, state)
 	})
 	defer server.Close()
 
 	request := RateSummaryRequest{State: state}
-	result, err := zillow.GetRateSummary(request)
+	result, err := zillow.GetRateSummary(ctx, request)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -888,6 +899,7 @@ func TestGetRateSummary(t *testing.T) {
 }
 
 func TestGetMonthlyPayments(t *testing.T) {
+	ctx := context.Background()
 	server, zillow := testFixtures(t, monthlyPaymentsPath, func(values url.Values) {
 		assertOnlyParam(t, values, priceParam, strconv.Itoa(price))
 		assertOnlyParam(t, values, downParam, strconv.Itoa(down))
@@ -896,7 +908,7 @@ func TestGetMonthlyPayments(t *testing.T) {
 	defer server.Close()
 
 	request := MonthlyPaymentsRequest{Price: price, Down: down, Zip: zip}
-	result, err := zillow.GetMonthlyPayments(request)
+	result, err := zillow.GetMonthlyPayments(ctx, request)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -938,6 +950,7 @@ func TestGetMonthlyPayments(t *testing.T) {
 }
 
 func TestCalculateMonthlyPaymentsAdvanced(t *testing.T) {
+	ctx := context.Background()
 	server, zillow := testFixtures(t, monthlyPaymentsAdvancedPath, func(values url.Values) {
 		assertOnlyParam(t, values, priceParam, strconv.Itoa(price))
 		assertOnlyParam(t, values, rateParam, strconv.FormatFloat(float64(rate), 'f', -1, 32))
@@ -962,7 +975,7 @@ func TestCalculateMonthlyPaymentsAdvanced(t *testing.T) {
 		HOA:          hoa,
 		Zip:          zip,
 	}
-	result, err := zillow.CalculateMonthlyPaymentsAdvanced(request)
+	result, err := zillow.CalculateMonthlyPaymentsAdvanced(ctx, request)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1017,6 +1030,7 @@ func TestCalculateMonthlyPaymentsAdvanced(t *testing.T) {
 }
 
 func TestCalculateAffordability(t *testing.T) {
+	ctx := context.Background()
 	down := 800000
 	rate := float32(6.504)
 	schedule := "yearly"
@@ -1061,7 +1075,7 @@ func TestCalculateAffordability(t *testing.T) {
 		HOA:            hoa,
 		Zip:            zip,
 	}
-	result, err := zillow.CalculateAffordability(request)
+	result, err := zillow.CalculateAffordability(ctx, request)
 	if err != nil {
 		t.Fatal(err)
 	}
