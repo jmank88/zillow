@@ -8,9 +8,28 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-
-	"golang.org/x/net/context/ctxhttp"
 )
+
+type Config struct {
+	ZWSID  string       // required
+	URL    string       // optional
+	Client *http.Client // optional
+}
+
+func NewZillow(c Config) Zillow {
+	z := &zillow{
+		zwsId:  c.ZWSID,
+		url:    c.URL,
+		client: c.Client,
+	}
+	if z.url == "" {
+		z.url = baseUrl
+	}
+	if z.client == nil {
+		z.client = http.DefaultClient
+	}
+	return z
+}
 
 type Zillow interface {
 	// Home Valuation
@@ -38,14 +57,16 @@ type Zillow interface {
 }
 
 // New creates a new zillow client.
+// Deprecated. Use NewZillow() instead.
 func New(zwsId string) Zillow {
-	return NewExt(zwsId, baseUrl)
+	return NewZillow(Config{ZWSID: zwsId, URL: baseUrl})
 }
 
 // NewExt creates a new zillow client.
 // It's like New but accepts more options.
+// Deprecated. Use NewZillow() instead.
 func NewExt(zwsId, baseUrl string) Zillow {
-	return &zillow{zwsId, baseUrl, http.DefaultClient}
+	return NewZillow(Config{ZWSID: zwsId, URL: baseUrl})
 }
 
 type Message struct {
@@ -610,7 +631,9 @@ type zillow struct {
 }
 
 func (z *zillow) get(ctx context.Context, path string, values url.Values, result interface{}) error {
-	if resp, err := ctxhttp.Get(ctx, z.client, z.url+"/"+path+".htm?"+values.Encode()); err != nil {
+	if req, err := http.NewRequestWithContext(ctx, "GET", z.url+"/"+path+".htm?"+values.Encode(), nil); err != nil {
+		return err
+	} else if resp, err := z.client.Do(req); err != nil {
 		return err
 	} else if err = xml.NewDecoder(resp.Body).Decode(result); err != nil {
 		return err
